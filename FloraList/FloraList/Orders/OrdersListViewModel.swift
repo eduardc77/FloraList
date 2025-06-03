@@ -26,6 +26,11 @@ final class OrdersListViewModel {
     }
 
     @MainActor
+    func refresh() async {
+        await fetchData()
+    }
+
+    @MainActor
     private func fetchData() async {
         isLoading = true
         errorMessage = nil
