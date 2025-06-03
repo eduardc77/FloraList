@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CEE962F62DEF305B0002A40F /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CEE962F52DEF305B0002A40F /* Networking */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CE876C8B2DEE43E7000B9E5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		CE876C792DEE43E4000B9E5C /* FloraList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloraList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C8A2DEE43E7000B9E5C /* FloraListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C942DEE43E7000B9E5C /* FloraListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEE962F32DEF30340002A40F /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = ../Networking; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE962F62DEF305B0002A40F /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +84,8 @@
 				CE876C7B2DEE43E4000B9E5C /* FloraList */,
 				CE876C8D2DEE43E7000B9E5C /* FloraListTests */,
 				CE876C972DEE43E7000B9E5C /* FloraListUITests */,
+				CEE962F32DEF30340002A40F /* Networking */,
+				CEE962F42DEF305B0002A40F /* Frameworks */,
 				CE876C7A2DEE43E4000B9E5C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +98,13 @@
 				CE876C942DEE43E7000B9E5C /* FloraListUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CEE962F42DEF305B0002A40F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -113,6 +128,7 @@
 			);
 			name = FloraList;
 			packageProductDependencies = (
+				CEE962F52DEF305B0002A40F /* Networking */,
 			);
 			productName = FloraList;
 			productReference = CE876C792DEE43E4000B9E5C /* FloraList.app */;
@@ -251,7 +267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n    swiftlint || true\nelse\n    echo \"warning: SwiftLint not installed\"\nfi\n";
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n    swiftlint || true\n    cd \"${SRCROOT}/Networking\" && swiftlint || true\nelse\n    echo \"warning: SwiftLint not installed\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -609,6 +625,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CEE962F52DEF305B0002A40F /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE876C712DEE43E4000B9E5C /* Project object */;
 }
