@@ -19,6 +19,12 @@ Brief description of what this PR accomplishes
 - [ ] Manual testing completed
 - [ ] No regressions in existing functionality
 
+## UI Testing (if applicable)
+- [ ] Tested on different screen sizes (iPhone SE, Pro, Pro Max)
+- [ ] Works in both portrait and landscape
+- [ ] Dark/Light mode compatible
+- [ ] Accessibility considerations addressed
+
 ## Screenshots (if applicable)
 <!-- Add screenshots for UI changes -->
 
