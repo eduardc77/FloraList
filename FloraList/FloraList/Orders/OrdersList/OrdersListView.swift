@@ -12,6 +12,12 @@ struct OrdersListView: View {
     @State private var viewModel = OrdersListViewModel()
     @Environment(\.ordersCoordinator) private var coordinator
 
+    private var hasActiveFilters: Bool {
+        viewModel.selectedStatus != nil ||
+        viewModel.selectedSortOption != nil ||
+        !viewModel.searchText.isEmpty
+    }
+
     var body: some View {
         @Bindable var coordinator = coordinator
 
@@ -27,6 +33,12 @@ struct OrdersListView: View {
             }
             .listStyle(.plain)
             .navigationTitle("Orders")
+            .searchable(text: $viewModel.searchText, prompt: "Search orders...")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    filterSortMenu
+                }
+            }
             .refreshable {
                 await viewModel.refresh()
             }
@@ -46,6 +58,24 @@ struct OrdersListView: View {
     }
 
     // MARK: - Subviews
+
+    private var ordersView: some View {
+        Group {
+            if viewModel.filteredAndSortedOrders.isEmpty {
+                ContentUnavailableView.search(text: viewModel.searchText)
+            } else {
+                ForEach(viewModel.filteredAndSortedOrders) { order in
+                    Button {
+                        coordinator.showOrderDetail(order)
+                    } label: {
+                        OrderRowView(order: order, customer: viewModel.customer(for: order))
+                    }
+                    .contentShape(.rect)
+                }
+            }
+        }
+        .listRowSeparator(.hidden)
+    }
 
     private var loadingView: some View {
         HStack {
@@ -76,14 +106,68 @@ struct OrdersListView: View {
         .listRowSeparator(.hidden)
     }
 
-    private var ordersView: some View {
-        ForEach(viewModel.orders) { order in
-            Button {
-                coordinator.showOrderDetail(order)
-            } label: {
-                OrderRowView(order: order, customer: viewModel.customer(for: order))
+    // MARK: - Filter and Sort Menus
+
+    private var filterSortMenu: some View {
+        Menu {
+            filterMenu
+            sortMenu
+
+            if viewModel.selectedStatus != nil ||
+                viewModel.selectedSortOption != nil ||
+                !viewModel.searchText.isEmpty {
+                Divider()
+
+                Button(role: .destructive) {
+                    viewModel.clearFilters()
+                } label: {
+                    Label("Clear All", systemImage: "xmark.circle.fill")
+                }
             }
-            .contentShape(.rect)
+        } label: {
+            Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+                .symbolVariant(hasActiveFilters ? .fill : .none)
+        }
+    }
+
+    private var filterMenu: some View {
+        Menu {
+            ForEach(OrderStatus.allCases, id: \.self) { status in
+                Button {
+                    viewModel.selectedStatus = viewModel.selectedStatus == status ? nil : status
+                } label: {
+                    HStack {
+                        Label(status.displayName, systemImage: status.systemImage)
+                            .foregroundStyle(status.color)
+                        Spacer()
+                        if viewModel.selectedStatus == status {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            Label("Filter by Status", systemImage: "tag")
+        }
+    }
+
+    private var sortMenu: some View {
+        Menu {
+            ForEach(OrdersListViewModel.SortOption.allCases, id: \.self) { option in
+                Button {
+                    viewModel.selectedSortOption = viewModel.selectedSortOption == option ? nil : option
+                } label: {
+                    HStack {
+                        Text(option.rawValue)
+                        Spacer()
+                        if viewModel.selectedSortOption == option {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            Label("Sort Orders", systemImage: "arrow.up.arrow.down")
         }
     }
 }
