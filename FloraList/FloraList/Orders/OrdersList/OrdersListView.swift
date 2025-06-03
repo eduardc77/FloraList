@@ -10,9 +10,12 @@ import Networking
 
 struct OrdersListView: View {
     @State private var viewModel = OrdersListViewModel()
+    @Environment(\.ordersCoordinator) private var coordinator
 
     var body: some View {
-        NavigationStack {
+        @Bindable var coordinator = coordinator
+
+        NavigationStack(path: $coordinator.navigationPath) {
             List {
                 if viewModel.isLoading && viewModel.orders.isEmpty {
                     loadingView
@@ -30,6 +33,15 @@ struct OrdersListView: View {
             .task {
                 await viewModel.loadOrders()
             }
+            .navigationDestination(for: OrdersCoordinator.Route.self) { route in
+                switch route {
+                case .orderDetail(let order):
+                    OrderDetailView(
+                        order: order,
+                        customer: viewModel.customer(for: order)
+                    )
+                }
+            }
         }
     }
 
@@ -38,7 +50,7 @@ struct OrdersListView: View {
     private var loadingView: some View {
         HStack {
             Spacer()
-            VStack(spacing: 12) {
+            VStack {
                 ProgressView()
                 Text("Loading orders...")
                     .foregroundStyle(.secondary)
@@ -66,11 +78,12 @@ struct OrdersListView: View {
 
     private var ordersView: some View {
         ForEach(viewModel.orders) { order in
-            NavigationLink {
-                OrderDetailView(order: order, customer: viewModel.customer(for: order))
+            Button {
+                coordinator.showOrderDetail(order)
             } label: {
                 OrderRowView(order: order, customer: viewModel.customer(for: order))
             }
+            .contentShape(.rect)
         }
     }
 }
