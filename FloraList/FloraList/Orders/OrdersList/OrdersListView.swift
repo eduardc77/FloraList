@@ -66,7 +66,11 @@ struct OrdersListView: View {
 
     private var ordersView: some View {
         ForEach(viewModel.orders) { order in
-            OrderRowView(order: order, customer: viewModel.customer(for: order))
+            NavigationLink {
+                OrderDetailView(order: order, customer: viewModel.customer(for: order))
+            } label: {
+                OrderRowView(order: order, customer: viewModel.customer(for: order))
+            }
         }
     }
 }

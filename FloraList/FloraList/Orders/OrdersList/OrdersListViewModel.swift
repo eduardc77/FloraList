@@ -30,6 +30,10 @@ final class OrdersListViewModel {
         await fetchData()
     }
 
+    func customer(for order: Order) -> Customer? {
+        customers.first { $0.id == order.customerID }
+    }
+
     @MainActor
     private func fetchData() async {
         isLoading = true
@@ -46,9 +50,5 @@ final class OrdersListViewModel {
         }
 
         isLoading = false
-    }
-
-    func customer(for order: Order) -> Customer? {
-        customers.first { $0.id == order.customerID }
     }
 }
