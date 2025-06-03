@@ -15,9 +15,60 @@ final class OrdersListViewModel {
     var isLoading = false
     var errorMessage: String?
 
+    var searchText = ""
+    var selectedStatus: OrderStatus?
+
+    enum SortOption: String, CaseIterable {
+        case priceHighToLow = "Price: High to Low"
+        case priceLowToHigh = "Price: Low to High"
+        case status = "Status"
+    }
+
+    var selectedSortOption: SortOption?
+
     private let orderService = OrderService()
 
-    init() {}
+    var filteredAndSortedOrders: [Order] {
+        var result = orders
+
+        // Search
+        if !searchText.isEmpty {
+            result = result.filter { order in
+                order.description.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+
+        // Filter by status
+        if let status = selectedStatus {
+            result = result.filter { $0.status == status }
+        }
+
+        // Sort
+        if let sortOption = selectedSortOption {
+            switch sortOption {
+            case .priceHighToLow:
+                result.sort { $0.price > $1.price }
+            case .priceLowToHigh:
+                result.sort { $0.price < $1.price }
+            case .status:
+                result.sort { $0.status.rawValue < $1.status.rawValue }
+            }
+        }
+
+        return result
+    }
+
+    // MARK: - Methods
+
+    func clearFilters() {
+        searchText = ""
+        selectedStatus = nil
+        selectedSortOption = nil
+    }
+
+    func customer(for order: Order) -> Customer? {
+        customers.first { $0.id == order.customerID }
+    }
 
     @MainActor
     func loadOrders() async {
@@ -28,10 +79,6 @@ final class OrdersListViewModel {
     @MainActor
     func refresh() async {
         await fetchData()
-    }
-
-    func customer(for order: Order) -> Customer? {
-        customers.first { $0.id == order.customerID }
     }
 
     @MainActor
