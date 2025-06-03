@@ -1,0 +1,16 @@
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - closure_spacing
+  - collection_alignment
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+excluded:
+  - .build
+  - Tests
+
+# Use the main project's config as parent for consistency
+parent_config: ../.swiftlint.yml 
