@@ -1,0 +1,23 @@
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - closure_spacing
+  - collection_alignment
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+excluded:
+  - Pods
+  - .build
+  - DerivedData
+  - FloraList/FloraListTests/
+  - FloraList/FloraListUITests/
+
+line_length: 120
+type_body_length: 300
+function_body_length: 60
+
+identifier_name:
+  min_length: 1 
