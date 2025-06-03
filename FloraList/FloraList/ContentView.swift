@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var coordinator = OrdersCoordinator()
-    
+
     var body: some View {
         OrdersListView()
             .environment(\.ordersCoordinator, coordinator)
