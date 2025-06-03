@@ -9,68 +9,83 @@ import SwiftUI
 import Networking
 
 struct OrderDetailView: View {
-    let order: Order
-    let customer: Customer?
+    @State private var viewModel: OrderDetailViewModel
+
+    init(order: Order, customer: Customer?) {
+        _viewModel = State(initialValue: OrderDetailViewModel(order: order, customer: customer))
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                orderImageSection
-                orderInfoSection
-                customerSection
-            }
-            .padding()
+        Form {
+            orderImage
+            orderInfo
+            statusSection
+            customerInfoSection
         }
-        .navigationTitle("Order Details")
+        .listSectionSpacing(20)
+        .navigationTitle(viewModel.order.description)
         .navigationBarTitleDisplayMode(.large)
     }
 
     // MARK: - Sections
 
-    private var orderImageSection: some View {
-        AsyncImage(url: URL(string: order.imageURL)) { image in
+    private var orderImage: some View {
+        AsyncImage(url: URL(string: viewModel.order.imageURL)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .frame(height: 300)
+                .aspectRatio(contentMode: .fit)
+
         } placeholder: {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.gray.opacity(0.3))
+                .frame(height: 300)
                 .overlay {
                     Image(systemName: "photo")
                         .font(.title)
                         .foregroundStyle(.secondary)
                 }
         }
-        .frame(height: 200)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .listRowInsets(.init())
+        .listRowBackground(Color.clear)
     }
 
-    private var orderInfoSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(order.description)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-
-                Text("$\(order.price, specifier: "%.2f")")
+    private var orderInfo: some View {
+        Section {
+            VStack(alignment: .leading) {
+                Text("$\(viewModel.order.price, specifier: "%.2f")")
                     .font(.title3)
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
-            }
 
-            HStack {
-                Label("Order #\(order.id)", systemImage: "number")
-                Spacer()
-                statusBadge
+                LabeledContent("Order #\(viewModel.order.id)") {
+                    statusBadge
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var customerSection: some View {
-        GroupBox {
+    private var statusSection: some View {
+        Section {
+            Picker("Order Status", selection: .init(
+                get: { viewModel.order.status },
+                set: { viewModel.updateStatus($0) }
+            )) {
+                ForEach(OrderStatus.allCases, id: \.self) { status in
+                    Label(status.displayName, systemImage: status.systemImage)
+                        .foregroundStyle(status.color)
+                        .tag(status)
+                }
+            }
+            .pickerStyle(.menu)
+        }
+    }
+
+    private var customerInfoSection: some View {
+        Section {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Text("Customer Information")
@@ -78,7 +93,7 @@ struct OrderDetailView: View {
                     Spacer()
                 }
 
-                if let customer = customer {
+                if let customer = viewModel.customer {
                     VStack(alignment: .leading, spacing: 8) {
                         Label(customer.name, systemImage: "person.fill")
                         Label("Location: (\(customer.latitude), \(customer.longitude))", systemImage: "location.fill")
@@ -93,13 +108,13 @@ struct OrderDetailView: View {
     }
 
     private var statusBadge: some View {
-        Text(order.status.displayName)
+        Text(viewModel.order.status.displayName)
             .font(.caption)
             .fontWeight(.medium)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(order.status.color.opacity(0.2))
-            .foregroundStyle(order.status.color)
+            .background(viewModel.order.status.color.opacity(0.2))
+            .foregroundStyle(viewModel.order.status.color)
             .clipShape(Capsule())
     }
 }
