@@ -29,33 +29,10 @@ final class OrdersListViewModel {
     private let orderService = OrderService()
 
     var filteredAndSortedOrders: [Order] {
-        var result = orders
-
-        // Search
-        if !searchText.isEmpty {
-            result = result.filter { order in
-                order.description.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-
-        // Filter by status
-        if let status = selectedStatus {
-            result = result.filter { $0.status == status }
-        }
-
-        // Sort
-        if let sortOption = selectedSortOption {
-            switch sortOption {
-            case .priceHighToLow:
-                result.sort { $0.price > $1.price }
-            case .priceLowToHigh:
-                result.sort { $0.price < $1.price }
-            case .status:
-                result.sort { $0.status.rawValue < $1.status.rawValue }
-            }
-        }
-
-        return result
+        orders
+            .search(with: searchText)
+            .filtered(by: selectedStatus)
+            .sorted(by: selectedSortOption)
     }
 
     // MARK: - Methods
@@ -97,5 +74,34 @@ final class OrdersListViewModel {
         }
 
         isLoading = false
+    }
+}
+
+// MARK: - Search, Filter and Sort
+
+private extension Array where Element == Order {
+    func search(with text: String) -> [Order] {
+        guard !text.isEmpty else { return self }
+        return filter { order in
+            order.description.localizedCaseInsensitiveContains(text)
+        }
+    }
+
+    func filtered(by status: OrderStatus?) -> [Order] {
+        guard let status else { return self }
+        return filter { $0.status == status }
+    }
+
+    func sorted(by option: OrdersListViewModel.SortOption?) -> [Order] {
+        guard let option else { return self }
+
+        switch option {
+        case .priceHighToLow:
+            return sorted { $0.price > $1.price }
+        case .priceLowToHigh:
+            return sorted { $0.price < $1.price }
+        case .status:
+            return sorted { $0.status.rawValue < $1.status.rawValue }
+        }
     }
 }
