@@ -10,6 +10,7 @@ import Networking
 
 struct CustomerOrdersSheet: View {
     @Environment(OrderManager.self) private var orderManager
+    @Environment(LocationManager.self) private var locationManager
     @Environment(\.dismiss) private var dismiss
     let customer: Customer
 
@@ -43,6 +44,8 @@ struct CustomerOrdersSheet: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        
+                        DistanceInfoLabel(customer: customer, locationManager: locationManager)
                     }
                     .padding(.vertical, 4)
                 }
