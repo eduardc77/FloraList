@@ -10,14 +10,15 @@ import Networking
 
 @Observable
 final class DeepLinkManager {
-    private let orderService = OrderService()
-    private var ordersCoordinator: OrdersCoordinator?
-
+    private var orderManager: OrderManager?
+    private var coordinator: OrdersCoordinator?
+    
     enum DeepLinkError: LocalizedError {
         case invalidURL
         case orderNotFound
         case invalidOrderId
-
+        case notConfigured
+        
         var errorDescription: String? {
             switch self {
             case .invalidURL:
@@ -26,20 +27,23 @@ final class DeepLinkManager {
                 return "Order not found"
             case .invalidOrderId:
                 return "Invalid order ID"
+            case .notConfigured:
+                return "Deep linking is not configured properly"
             }
         }
     }
-
-    func setup(with coordinator: OrdersCoordinator) {
-        self.ordersCoordinator = coordinator
+    
+    func setup(with manager: OrderManager, coordinator: OrdersCoordinator) {
+        self.orderManager = manager
+        self.coordinator = coordinator
     }
-
+    
     func handle(_ url: URL) async throws {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.scheme == "floralist" else {
             throw DeepLinkError.invalidURL
         }
-
+        
         switch components.host {
         case "orders":
             try await handleOrders(components)
@@ -47,20 +51,24 @@ final class DeepLinkManager {
             throw DeepLinkError.invalidURL
         }
     }
-
+    
     private func handleOrders(_ components: URLComponents) async throws {
+        guard let orderManager = orderManager,
+              let coordinator = coordinator else {
+            throw DeepLinkError.notConfigured
+        }
+        
         guard let orderIdString = components.path.split(separator: "/").last,
               let orderId = Int(orderIdString) else {
             throw DeepLinkError.invalidOrderId
         }
-
-        let orders = try await orderService.fetchOrders()
-        guard let order = orders.first(where: { $0.id == orderId }) else {
+        
+        guard let order = orderManager.findOrder(by: orderId) else {
             throw DeepLinkError.orderNotFound
         }
-
+        
         await MainActor.run {
-            ordersCoordinator?.showOrderDetail(order)
+            coordinator.showOrderDetail(order)
         }
     }
 }

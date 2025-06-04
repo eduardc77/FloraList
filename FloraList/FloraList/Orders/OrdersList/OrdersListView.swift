@@ -9,8 +9,29 @@ import SwiftUI
 import Networking
 
 struct OrdersListView: View {
-    @State private var viewModel = OrdersListViewModel()
+    @Environment(OrderManager.self) private var orderManager
     @Environment(OrdersCoordinator.self) private var coordinator
+
+    var body: some View {
+        OrdersListContentView(
+            viewModel: OrdersListViewModel(
+                orderManager: orderManager
+            )
+        )
+    }
+}
+
+private struct OrdersListContentView: View {
+    @State private var viewModel: OrdersListViewModel
+    @Environment(OrdersCoordinator.self) private var coordinator
+
+    init(viewModel: OrdersListViewModel) {
+        self._viewModel = State(initialValue: viewModel)
+    }
+
+    private var bindableCoordinator: Bindable<OrdersCoordinator> {
+        Bindable(coordinator)
+    }
 
     private var hasActiveFilters: Bool {
         viewModel.selectedStatus != nil ||
@@ -19,13 +40,11 @@ struct OrdersListView: View {
     }
 
     var body: some View {
-        @Bindable var coordinator = coordinator
-
-        NavigationStack(path: $coordinator.navigationPath) {
+        NavigationStack(path: bindableCoordinator.navigationPath) {
             List {
-                if viewModel.isLoading && viewModel.orders.isEmpty {
+                if viewModel.isLoading && viewModel.filteredAndSortedOrders.isEmpty {
                     loadingView
-                } else if let errorMessage = viewModel.errorMessage, viewModel.orders.isEmpty {
+                } else if let errorMessage = viewModel.errorMessage, viewModel.filteredAndSortedOrders.isEmpty {
                     errorView(errorMessage)
                 } else {
                     ordersView

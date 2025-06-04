@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct FloraListApp: App {
+    @State private var orderManager = OrderManager()
     @State private var coordinator = OrdersCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
     @State private var errorMessage: String?
@@ -16,12 +17,15 @@ struct FloraListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
+                .environment(orderManager)
                 .environment(coordinator)
                 .environment(notificationManager)
                 .task {
-                    deepLinkManager.setup(with: coordinator)
+                    deepLinkManager.setup(with: orderManager, coordinator: coordinator)
                     await notificationManager.setup()
+                    // Initial data fetch
+                    await orderManager.fetchData()
                 }
                 .onOpenURL { url in
                     Task {
@@ -37,14 +41,14 @@ struct FloraListApp: App {
                         get: { errorMessage != nil },
                         set: { if !$0 { errorMessage = nil } }
                        )) {
-                           Button("OK") {
-                               errorMessage = nil
-                           }
-                       } message: {
-                           if let errorMessage {
-                               Text(errorMessage)
-                           }
-                       }
+                    Button("OK") {
+                        errorMessage = nil
+                    }
+                } message: {
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
+                }
         }
     }
 }
