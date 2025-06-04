@@ -114,7 +114,7 @@ private struct OrderDetailContentView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Label(customer.name, systemImage: "person.fill")
 
-                    locationInfoLabel(for: customer)
+                    LocationInfoLabel(customer: customer)
 
                     // Distance information
                     if locationManager.isLocationAvailable {
@@ -146,16 +146,6 @@ private struct OrderDetailContentView: View {
             .background(viewModel.order.status.color.opacity(0.2))
             .foregroundStyle(viewModel.order.status.color)
             .clipShape(Capsule())
-    }
-
-    private func locationInfoLabel(for customer: Customer) -> some View {
-        Label {
-            let lat = String(format: "%.6f", customer.latitude)
-            let lon = String(format: "%.6f", customer.longitude)
-            Text("Lat: \(lat), Lon: \(lon)")
-        } icon: {
-            Image(systemName: "location.fill")
-        }
     }
 
     private func distanceInfoLabel(for customer: Customer) -> some View {

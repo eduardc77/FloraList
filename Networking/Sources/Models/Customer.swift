@@ -5,7 +5,7 @@
 //  Created by User on 6/3/25.
 //
 
-public struct Customer: Codable, Identifiable, Sendable {
+public struct Customer: Codable, Identifiable, Sendable, Equatable {
     public let id: Int
     public let name: String
     public let latitude: Double
