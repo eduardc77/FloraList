@@ -8,15 +8,15 @@ disabled_rules:
   - trailing_whitespace
 
 excluded:
-  - Pods
   - .build
-  - DerivedData
-  - FloraList/FloraListTests/
-  - FloraList/FloraListUITests/
+  - Tests  # or FloraListTests/FloraListUITests/ for main project
 
-line_length: 120
+line_length:
+  warning: 150
+  error: 200
+
 type_body_length: 300
 function_body_length: 60
 
 identifier_name:
-  min_length: 1 
+  min_length: 1

@@ -9,7 +9,14 @@ disabled_rules:
 
 excluded:
   - .build
-  - Tests
+  - Tests  # or FloraListTests/FloraListUITests/ for main project
 
-# Use the main project's config as parent for consistency
-parent_config: ../.swiftlint.yml 
+line_length:
+  warning: 150
+  error: 200
+
+type_body_length: 300
+function_body_length: 60
+
+identifier_name:
+  min_length: 1
