@@ -93,7 +93,6 @@ private struct OrdersListContentView: View {
                 }
             }
         }
-        .listRowSeparator(.hidden)
     }
 
     private var loadingView: some View {

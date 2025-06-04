@@ -1,0 +1,78 @@
+//
+//  CustomerOrdersSheet.swift
+//  FloraList
+//
+//  Created by User on 6/4/25.
+//
+
+import SwiftUI
+import Networking
+
+struct CustomerOrdersSheet: View {
+    @Environment(OrderManager.self) private var orderManager
+    @Environment(\.dismiss) private var dismiss
+    let customer: Customer
+
+    private var customerOrders: [Order] {
+        orderManager.orders.filter { $0.customerID == customer.id }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Image(systemName: "person.circle.fill")
+                                .foregroundStyle(.blue)
+                                .font(.title2)
+                            VStack(alignment: .leading) {
+                                Text(customer.name)
+                                    .font(.headline)
+                                Text("Customer ID: \(customer.id)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+
+                        HStack {
+                            Image(systemName: "location.fill")
+                                .foregroundStyle(.green)
+                            Text("Lat: \(customer.latitude, specifier: "%.6f"), Lon: \(customer.longitude, specifier: "%.6f")")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+
+                Section("Orders (\(customerOrders.count))") {
+                    if customerOrders.isEmpty {
+                        ContentUnavailableView {
+                            Label("No Orders", systemImage: "list.bullet")
+                        } description: {
+                            Text("This customer hasn't placed any orders yet.")
+                        }
+                        .listRowBackground(Color.clear)
+                    } else {
+                        ForEach(customerOrders) { order in
+                            OrderRowView(order: order, customer: customer)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Customer Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+}
