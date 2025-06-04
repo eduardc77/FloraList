@@ -14,6 +14,8 @@ struct CustomerMapView: View {
     @Environment(LocationManager.self) private var locationManager
     @State private var selectedCustomer: Customer?
     @State private var showingCustomerOrders = false
+    @State private var showRoutes = false
+    @State private var routes: [MKRoute] = []
 
     var body: some View {
         NavigationStack {
@@ -28,6 +30,19 @@ struct CustomerMapView: View {
             }
             .navigationTitle("Customer Locations")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        if showRoutes {
+                            hideRoutes()
+                        } else {
+                            showOrderRoutes()
+                        }
+                    } label: {
+                        Image(systemName: showRoutes ? "location.fill" : "location")
+                    }
+                }
+            }
             .sheet(item: $selectedCustomer) { customer in
                 CustomerOrdersSheet(customer: customer)
             }
@@ -40,7 +55,9 @@ struct CustomerMapView: View {
         MapView(
             customers: orderManager.customers,
             selectedCustomer: $selectedCustomer,
-            userLocation: locationManager.currentLocation?.coordinate
+            userLocation: locationManager.currentLocation?.coordinate,
+            showRoutes: $showRoutes,
+            routes: routes
         )
         .onChange(of: selectedCustomer) { _, customer in
             if customer != nil {
@@ -68,6 +85,34 @@ struct CustomerMapView: View {
             }
             .buttonStyle(.borderedProminent)
         }
+    }
+
+    // MARK: - Route Management
+    
+    private func showOrderRoutes() {
+        Task {
+            var calculatedRoutes: [MKRoute] = []
+            
+            for customer in orderManager.customers {
+                do {
+                    if let route = try await locationManager.calculateRoute(to: customer) {
+                        calculatedRoutes.append(route)
+                    }
+                } catch {
+                    print("Failed to calculate route to \(customer.name): \(error)")
+                }
+            }
+            
+            await MainActor.run {
+                routes = calculatedRoutes
+                showRoutes = true
+            }
+        }
+    }
+    
+    private func hideRoutes() {
+        showRoutes = false
+        routes = []
     }
 }
 

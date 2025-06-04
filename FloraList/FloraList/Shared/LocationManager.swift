@@ -71,6 +71,25 @@ final class LocationManager: NSObject {
         formatter.units = .metric
         return formatter.string(fromDistance: distance)
     }
+    
+    // MARK: - Route Calculations
+    
+    func calculateRoute(to customer: Customer) async throws -> MKRoute? {
+        guard let currentLocation = currentLocation else { return nil }
+        
+        let sourcePlacemark = MKPlacemark(coordinate: currentLocation.coordinate)
+        let destinationPlacemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: customer.latitude, longitude: customer.longitude))
+        
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: sourcePlacemark)
+        request.destination = MKMapItem(placemark: destinationPlacemark)
+        request.transportType = .automobile
+        
+        let directions = MKDirections(request: request)
+        let response = try await directions.calculate()
+        
+        return response.routes.first
+    }
 }
 
 // MARK: - CLLocationManagerDelegate

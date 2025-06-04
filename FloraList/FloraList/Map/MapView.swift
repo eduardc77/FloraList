@@ -13,6 +13,8 @@ struct MapView: UIViewRepresentable {
     let customers: [Customer]
     @Binding var selectedCustomer: Customer?
     let userLocation: CLLocationCoordinate2D?
+    @Binding var showRoutes: Bool
+    let routes: [MKRoute]
 
     private static let defaultLatitude: CLLocationDegrees = 46.7712
     private static let defaultLongitude: CLLocationDegrees = 23.6236
@@ -46,14 +48,23 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        // Remove existing annotations
+        // Remove existing annotations (except user location)
         uiView.removeAnnotations(uiView.annotations.filter { !($0 is MKUserLocation) })
+        
+        // Remove existing overlays
+        uiView.removeOverlays(uiView.overlays)
 
         // Add customer annotations
         let annotations = customers.map { customer in
             CustomerAnnotation(customer: customer)
         }
         uiView.addAnnotations(annotations)
+        
+        // Add route overlays if enabled
+        if showRoutes {
+            let polylines = routes.map { $0.polyline }
+            uiView.addOverlays(polylines)
+        }
 
         #if targetEnvironment(simulator)
         // Simulator: Always center on customers for demo
@@ -149,6 +160,18 @@ extension MapView {
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
             guard let customerAnnotation = view.annotation as? CustomerAnnotation else { return }
             parent.selectedCustomer = customerAnnotation.customer
+        }
+        
+        // MARK: - Overlay Delegate
+        
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            if let polyline = overlay as? MKPolyline {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = .systemBlue
+                renderer.lineWidth = 4
+                return renderer
+            }
+            return MKOverlayRenderer(overlay: overlay)
         }
     }
 }
