@@ -10,7 +10,7 @@ import Networking
 
 struct OrdersListView: View {
     @State private var viewModel = OrdersListViewModel()
-    @Environment(\.ordersCoordinator) private var coordinator
+    @Environment(OrdersCoordinator.self) private var coordinator
 
     private var hasActiveFilters: Bool {
         viewModel.selectedStatus != nil ||

@@ -30,14 +30,3 @@ final class OrdersCoordinator {
         }
     }
 }
-
-private struct OrdersCoordinatorKey: EnvironmentKey {
-    static let defaultValue = OrdersCoordinator()
-}
-
-extension EnvironmentValues {
-    var ordersCoordinator: OrdersCoordinator {
-        get { self[OrdersCoordinatorKey.self] }
-        set { self[OrdersCoordinatorKey.self] = newValue }
-    }
-}
