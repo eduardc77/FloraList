@@ -15,27 +15,22 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             OrdersListView()
+                .tag(AppTab.orders)
+                .tabItem {
+                    Label(AppTab.orders.title, systemImage: AppTab.orders.icon)
+                }
+            
+            Text("Map")
+                .tag(AppTab.map)
+                .tabItem {
+                    Label(AppTab.map.title, systemImage: AppTab.map.icon)
+                }
 
-            .tag(AppTab.orders)
-            .tabItem {
-                Label(AppTab.orders.title, systemImage: AppTab.orders.icon)
-            }
-
-            NavigationStack {
-                Text("Map")
-            }
-            .tag(AppTab.map)
-            .tabItem {
-                Label(AppTab.map.title, systemImage: AppTab.map.icon)
-            }
-
-            NavigationStack {
-                Text("Settings")
-            }
-            .tag(AppTab.settings)
-            .tabItem {
-                Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
-            }
+            Text("Settings")
+                .tag(AppTab.settings)
+                .tabItem {
+                    Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
+                }
         }
         .task {
             await orderManager.fetchData()
