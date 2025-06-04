@@ -12,13 +12,16 @@ struct FloraListApp: App {
     @State private var coordinator = OrdersCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
     @State private var errorMessage: String?
+    @State private var notificationManager = NotificationManager()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(coordinator)
+                .environment(notificationManager)
                 .task {
                     deepLinkManager.setup(with: coordinator)
+                    await notificationManager.setup()
                 }
                 .onOpenURL { url in
                     Task {
@@ -34,14 +37,14 @@ struct FloraListApp: App {
                         get: { errorMessage != nil },
                         set: { if !$0 { errorMessage = nil } }
                        )) {
-                    Button("OK") {
-                        errorMessage = nil
-                    }
-                } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
-                    }
-                }
+                           Button("OK") {
+                               errorMessage = nil
+                           }
+                       } message: {
+                           if let errorMessage {
+                               Text(errorMessage)
+                           }
+                       }
         }
     }
 }

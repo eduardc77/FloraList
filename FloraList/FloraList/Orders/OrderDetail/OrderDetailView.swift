@@ -9,11 +9,28 @@ import SwiftUI
 import Networking
 
 struct OrderDetailView: View {
-    @State private var viewModel: OrderDetailViewModel
+    @Environment(NotificationManager.self) private var notificationManager
+    private let order: Order
+    private let customer: Customer?
 
     init(order: Order, customer: Customer?) {
-        _viewModel = State(initialValue: OrderDetailViewModel(order: order, customer: customer))
+        self.order = order
+        self.customer = customer
     }
+
+    var body: some View {
+        OrderDetailContentView(
+            viewModel: OrderDetailViewModel(
+                order: order,
+                customer: customer,
+                notificationManager: notificationManager
+            )
+        )
+    }
+}
+
+private struct OrderDetailContentView: View {
+    let viewModel: OrderDetailViewModel
 
     var body: some View {
         Form {
@@ -35,7 +52,6 @@ struct OrderDetailView: View {
                 .resizable()
                 .frame(height: 300)
                 .aspectRatio(contentMode: .fit)
-
         } placeholder: {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.gray.opacity(0.3))
