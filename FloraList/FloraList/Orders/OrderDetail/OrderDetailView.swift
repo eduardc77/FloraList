@@ -10,6 +10,7 @@ import Networking
 
 struct OrderDetailView: View {
     @Environment(NotificationManager.self) private var notificationManager
+    @Environment(LocationManager.self) private var locationManager
     private let order: Order
     private let customer: Customer?
 
@@ -24,13 +25,15 @@ struct OrderDetailView: View {
                 order: order,
                 customer: customer,
                 notificationManager: notificationManager
-            )
+            ),
+            locationManager: locationManager
         )
     }
 }
 
 private struct OrderDetailContentView: View {
     let viewModel: OrderDetailViewModel
+    let locationManager: LocationManager
 
     var body: some View {
         Form {
@@ -73,7 +76,6 @@ private struct OrderDetailContentView: View {
                 Text("$\(viewModel.order.price, specifier: "%.2f")")
                     .font(.title3)
                     .fontWeight(.medium)
-                    .foregroundStyle(.secondary)
 
                 LabeledContent("Order #\(viewModel.order.id)") {
                     statusBadge
@@ -102,23 +104,35 @@ private struct OrderDetailContentView: View {
 
     private var customerInfoSection: some View {
         Section {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text("Customer Information")
-                        .font(.headline)
-                    Spacer()
-                }
+            HStack {
+                Text("Customer Information")
+                    .font(.headline)
+                Spacer()
+            }
 
-                if let customer = viewModel.customer {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label(customer.name, systemImage: "person.fill")
-                        Label("Location: (\(customer.latitude), \(customer.longitude))", systemImage: "location.fill")
+            if let customer = viewModel.customer {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(customer.name, systemImage: "person.fill")
+
+                    locationInfoLabel(for: customer)
+
+                    // Distance information
+                    if locationManager.isLocationAvailable {
+                        distanceInfoLabel(for: customer)
+                    } else {
+                        Label {
+                            Text("Enable location for distance")
+                                .foregroundStyle(.secondary)
+                        } icon: {
+                            Image(systemName: "location.slash")
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .font(.subheadline)
-                } else {
-                    Text("Customer information unavailable")
-                        .foregroundStyle(.secondary)
                 }
+                .font(.subheadline)
+            } else {
+                Text("Customer information unavailable")
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -132,6 +146,26 @@ private struct OrderDetailContentView: View {
             .background(viewModel.order.status.color.opacity(0.2))
             .foregroundStyle(viewModel.order.status.color)
             .clipShape(Capsule())
+    }
+
+    private func locationInfoLabel(for customer: Customer) -> some View {
+        Label {
+            let lat = String(format: "%.6f", customer.latitude)
+            let lon = String(format: "%.6f", customer.longitude)
+            Text("Lat: \(lat), Lon: \(lon)")
+        } icon: {
+            Image(systemName: "location.fill")
+        }
+    }
+
+    private func distanceInfoLabel(for customer: Customer) -> some View {
+        Label {
+            Text(locationManager.formattedDistance(to: customer))
+                .foregroundStyle(.primary)
+        } icon: {
+            Image(systemName: "ruler")
+                .foregroundStyle(.orange)
+        }
     }
 }
 
@@ -149,4 +183,6 @@ private struct OrderDetailContentView: View {
             customer: Customer(id: 1, name: "John Doe", latitude: 46.562789, longitude: 23.784734)
         )
     }
+    .environment(NotificationManager())
+    .environment(LocationManager())
 }

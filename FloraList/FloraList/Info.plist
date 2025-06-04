@@ -13,6 +13,8 @@
 			<string>com.team.FloraList</string>
 		</dict>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FloraList needs location access to show your position relative to customer locations and for distance calculations.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

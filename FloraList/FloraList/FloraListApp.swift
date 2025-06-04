@@ -14,6 +14,7 @@ struct FloraListApp: App {
     @State private var deepLinkManager = DeepLinkManager()
     @State private var errorMessage: String?
     @State private var notificationManager = NotificationManager()
+    @State private var locationManager = LocationManager()
 
     var body: some Scene {
         WindowGroup {
@@ -21,9 +22,11 @@ struct FloraListApp: App {
                 .environment(orderManager)
                 .environment(coordinator)
                 .environment(notificationManager)
+                .environment(locationManager)
                 .task {
                     deepLinkManager.setup(with: orderManager, coordinator: coordinator)
                     await notificationManager.setup()
+                    locationManager.requestLocationPermission()
                     // Initial data fetch
                     await orderManager.fetchData()
                 }
