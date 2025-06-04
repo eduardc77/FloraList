@@ -10,10 +10,7 @@ import Networking
 
 @Observable
 final class OrdersListViewModel {
-    var orders: [Order] = []
-    var customers: [Customer] = []
-    var isLoading = false
-    var errorMessage: String?
+    private let orderManager: OrderManager
 
     var searchText = ""
     var selectedStatus: OrderStatus?
@@ -26,13 +23,18 @@ final class OrdersListViewModel {
 
     var selectedSortOption: SortOption?
 
-    private let orderService = OrderService()
+    var isLoading: Bool { orderManager.isLoading }
+    var errorMessage: String? { orderManager.error?.localizedDescription }
 
     var filteredAndSortedOrders: [Order] {
-        orders
+        orderManager.orders
             .search(with: searchText)
             .filtered(by: selectedStatus)
             .sorted(by: selectedSortOption)
+    }
+
+    init(orderManager: OrderManager) {
+        self.orderManager = orderManager
     }
 
     // MARK: - Methods
@@ -44,36 +46,18 @@ final class OrdersListViewModel {
     }
 
     func customer(for order: Order) -> Customer? {
-        customers.first { $0.id == order.customerID }
+        orderManager.customer(for: order)
     }
 
     @MainActor
     func loadOrders() async {
-        guard orders.isEmpty else { return }
-        await fetchData()
+        guard orderManager.orders.isEmpty else { return }
+        await orderManager.fetchData()
     }
 
     @MainActor
     func refresh() async {
-        await fetchData()
-    }
-
-    @MainActor
-    private func fetchData() async {
-        isLoading = true
-        errorMessage = nil
-
-        do {
-            async let ordersTask = orderService.fetchOrders()
-            async let customersTask = orderService.fetchCustomers()
-
-            orders = try await ordersTask
-            customers = try await customersTask
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-
-        isLoading = false
+        await orderManager.fetchData()
     }
 }
 

@@ -9,8 +9,40 @@ import SwiftUI
 import Networking
 
 struct OrdersListView: View {
-    @State private var viewModel = OrdersListViewModel()
+    @Environment(OrderManager.self) private var orderManager
     @Environment(OrdersCoordinator.self) private var coordinator
+
+    private var bindableCoordinator: Bindable<OrdersCoordinator> {
+        Bindable(coordinator)
+    }
+
+    var body: some View {
+        NavigationStack(path: bindableCoordinator.navigationPath) {
+            OrdersListContentView(
+                viewModel: OrdersListViewModel(
+                    orderManager: orderManager
+                )
+            )
+            .navigationDestination(for: OrdersCoordinator.Route.self) { route in
+                switch route {
+                case .orderDetail(let order):
+                    OrderDetailView(
+                        order: order,
+                        customer: orderManager.customer(for: order)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private struct OrdersListContentView: View {
+    @State private var viewModel: OrdersListViewModel
+    @Environment(OrdersCoordinator.self) private var coordinator
+
+    init(viewModel: OrdersListViewModel) {
+        self._viewModel = State(initialValue: viewModel)
+    }
 
     private var hasActiveFilters: Bool {
         viewModel.selectedStatus != nil ||
@@ -19,41 +51,28 @@ struct OrdersListView: View {
     }
 
     var body: some View {
-        @Bindable var coordinator = coordinator
-
-        NavigationStack(path: $coordinator.navigationPath) {
-            List {
-                if viewModel.isLoading && viewModel.orders.isEmpty {
-                    loadingView
-                } else if let errorMessage = viewModel.errorMessage, viewModel.orders.isEmpty {
-                    errorView(errorMessage)
-                } else {
-                    ordersView
-                }
+        List {
+            if viewModel.isLoading && viewModel.filteredAndSortedOrders.isEmpty {
+                loadingView
+            } else if let errorMessage = viewModel.errorMessage, viewModel.filteredAndSortedOrders.isEmpty {
+                errorView(errorMessage)
+            } else {
+                ordersView
             }
-            .listStyle(.plain)
-            .navigationTitle("Orders")
-            .searchable(text: $viewModel.searchText, prompt: "Search orders...")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    filterSortMenu
-                }
+        }
+        .listStyle(.plain)
+        .navigationTitle("Orders")
+        .searchable(text: $viewModel.searchText, prompt: "Search orders...")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                filterSortMenu
             }
-            .refreshable {
-                await viewModel.refresh()
-            }
-            .task {
-                await viewModel.loadOrders()
-            }
-            .navigationDestination(for: OrdersCoordinator.Route.self) { route in
-                switch route {
-                case .orderDetail(let order):
-                    OrderDetailView(
-                        order: order,
-                        customer: viewModel.customer(for: order)
-                    )
-                }
-            }
+        }
+        .refreshable {
+            await viewModel.refresh()
+        }
+        .task {
+            await viewModel.loadOrders()
         }
     }
 
