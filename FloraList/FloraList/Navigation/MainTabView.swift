@@ -19,7 +19,7 @@ struct MainTabView: View {
                 .tabItem {
                     Label(AppTab.orders.title, systemImage: AppTab.orders.icon)
                 }
-            
+
             Text("Map")
                 .tag(AppTab.map)
                 .tabItem {
