@@ -16,7 +16,14 @@ final class OrdersCoordinator {
         case orderDetail(Order)
     }
 
+    /// Normal navigation - appends to current stack
     func showOrderDetail(_ order: Order) {
+        navigationPath.append(Route.orderDetail(order))
+    }
+    
+    /// Deep link navigation - replaces stack with just this detail
+    func showOrderDetailFromDeepLink(_ order: Order) {
+        navigationPath = NavigationPath()
         navigationPath.append(Route.orderDetail(order))
     }
 

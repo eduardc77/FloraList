@@ -11,6 +11,7 @@ import Networking
 struct OrderDetailView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(LocationManager.self) private var locationManager
+    @Environment(DeepLinkManager.self) private var deepLinkManager
     private let order: Order
     private let customer: Customer?
 
@@ -34,6 +35,7 @@ struct OrderDetailView: View {
 private struct OrderDetailContentView: View {
     let viewModel: OrderDetailViewModel
     let locationManager: LocationManager
+    @Environment(DeepLinkManager.self) private var deepLinkManager
 
     var body: some View {
         Form {
@@ -120,6 +122,20 @@ private struct OrderDetailContentView: View {
                     DistanceInfoLabel(customer: customer, locationManager: locationManager)
                 }
                 .font(.subheadline)
+                
+                // Deep link to customer on map
+                Button {
+                    Task {
+                        await navigateToCustomerOnMap(customer)
+                    }
+                } label: {
+                    Label("View on Map", systemImage: "map")
+                        .foregroundStyle(.blue)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
             } else {
                 Text("Customer information unavailable")
                     .foregroundStyle(.secondary)
@@ -136,6 +152,22 @@ private struct OrderDetailContentView: View {
             .background(viewModel.order.status.color.opacity(0.2))
             .foregroundStyle(viewModel.order.status.color)
             .clipShape(Capsule())
+    }
+
+    // MARK: - Actions
+    
+    private func navigateToCustomerOnMap(_ customer: Customer) async {
+        do {
+            guard let url = URL(string: "floralist://map/customer/\(customer.id)") else {
+                print("Failed to create deep link URL for customer \(customer.id)")
+                return
+            }
+            
+            // Handle the deep link
+            try await deepLinkManager.handle(url)
+        } catch {
+            print("Failed to navigate to customer \(customer.id): \(error)")
+        }
     }
 }
 
@@ -155,4 +187,5 @@ private struct OrderDetailContentView: View {
     }
     .environment(NotificationManager())
     .environment(LocationManager())
+    .environment(DeepLinkManager())
 }

@@ -12,7 +12,7 @@ import Networking
 struct CustomerMapView: View {
     @Environment(OrderManager.self) private var orderManager
     @Environment(LocationManager.self) private var locationManager
-    @State private var selectedCustomer: Customer?
+    @Environment(CustomerMapCoordinator.self) private var coordinator
     @State private var showingCustomerOrders = false
     @State private var showRoutes = true
     @State private var routes: [MKRoute] = []
@@ -55,7 +55,10 @@ struct CustomerMapView: View {
                     }
                 }
             }
-            .sheet(item: $selectedCustomer) { customer in
+            .sheet(item: .init(
+                get: { coordinator.selectedCustomer },
+                set: { coordinator.selectedCustomer = $0 }
+            )) { customer in
                 CustomerOrdersSheet(customer: customer)
             }
         }
@@ -66,7 +69,10 @@ struct CustomerMapView: View {
     private var mapView: some View {
         MapView(
             customers: orderManager.customers,
-            selectedCustomer: $selectedCustomer,
+            selectedCustomer: .init(
+                get: { coordinator.selectedCustomer },
+                set: { coordinator.selectedCustomer = $0 }
+            ),
             userLocation: locationManager.currentLocation?.coordinate,
             showRoutes: $showRoutes,
             routes: routes,
@@ -79,7 +85,7 @@ struct CustomerMapView: View {
                 await showOrderRoutesAsync()
             }
         }
-        .onChange(of: selectedCustomer) { _, customer in
+        .onChange(of: coordinator.selectedCustomer) { _, customer in
             if customer != nil {
                 showingCustomerOrders = true
             }
