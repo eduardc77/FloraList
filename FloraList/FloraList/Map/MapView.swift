@@ -15,6 +15,8 @@ struct MapView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D?
     @Binding var showRoutes: Bool
     let routes: [MKRoute]
+    @Binding var shouldCenterOnUser: Bool
+    @Binding var isCenteredOnUser: Bool
 
     private static let defaultLatitude: CLLocationDegrees = 46.7712
     private static let defaultLongitude: CLLocationDegrees = 23.6236
@@ -64,6 +66,21 @@ struct MapView: UIViewRepresentable {
         if showRoutes {
             let polylines = routes.map { $0.polyline }
             uiView.addOverlays(polylines)
+        }
+        
+        // Handle centering on user location
+        if shouldCenterOnUser, let userLocation = userLocation {
+            // Preserve current zoom level by keeping the same span
+            let currentRegion = uiView.region
+            let newRegion = MKCoordinateRegion(
+                center: userLocation,
+                span: currentRegion.span
+            )
+            uiView.setRegion(newRegion, animated: true)
+            
+            // Reset the trigger and mark as centered
+            shouldCenterOnUser = false
+            isCenteredOnUser = true
         }
 
         #if targetEnvironment(simulator)
@@ -160,6 +177,13 @@ extension MapView {
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
             guard let customerAnnotation = view.annotation as? CustomerAnnotation else { return }
             parent.selectedCustomer = customerAnnotation.customer
+        }
+        
+        func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+            // When user starts manually moving the map, we're no longer centered on user
+            if parent.isCenteredOnUser {
+                parent.isCenteredOnUser = false
+            }
         }
         
         // MARK: - Overlay Delegate

@@ -14,8 +14,10 @@ struct CustomerMapView: View {
     @Environment(LocationManager.self) private var locationManager
     @State private var selectedCustomer: Customer?
     @State private var showingCustomerOrders = false
-    @State private var showRoutes = false
+    @State private var showRoutes = true
     @State private var routes: [MKRoute] = []
+    @State private var shouldCenterOnUser = false
+    @State private var isCenteredOnUser = false
 
     var body: some View {
         NavigationStack {
@@ -31,7 +33,8 @@ struct CustomerMapView: View {
             .navigationTitle("Customer Locations")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    // Routes toggle button
                     Button {
                         if showRoutes {
                             hideRoutes()
@@ -39,7 +42,16 @@ struct CustomerMapView: View {
                             showOrderRoutes()
                         }
                     } label: {
-                        Image(systemName: showRoutes ? "location.fill" : "location")
+                        Image(systemName: showRoutes ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
+                    }
+                    
+                    // Center on user location button
+                    if locationManager.isLocationAvailable {
+                        Button {
+                            centerOnUserLocation()
+                        } label: {
+                            Image(systemName: isCenteredOnUser ? "location.fill" : "location")
+                        }
                     }
                 }
             }
@@ -57,8 +69,16 @@ struct CustomerMapView: View {
             selectedCustomer: $selectedCustomer,
             userLocation: locationManager.currentLocation?.coordinate,
             showRoutes: $showRoutes,
-            routes: routes
+            routes: routes,
+            shouldCenterOnUser: $shouldCenterOnUser,
+            isCenteredOnUser: $isCenteredOnUser
         )
+        .task {
+            // Calculate routes on initial load since showRoutes is true by default
+            if showRoutes && routes.isEmpty {
+                await showOrderRoutesAsync()
+            }
+        }
         .onChange(of: selectedCustomer) { _, customer in
             if customer != nil {
                 showingCustomerOrders = true
@@ -91,28 +111,36 @@ struct CustomerMapView: View {
     
     private func showOrderRoutes() {
         Task {
-            var calculatedRoutes: [MKRoute] = []
-            
-            for customer in orderManager.customers {
-                do {
-                    if let route = try await locationManager.calculateRoute(to: customer) {
-                        calculatedRoutes.append(route)
-                    }
-                } catch {
-                    print("Failed to calculate route to \(customer.name): \(error)")
+            await showOrderRoutesAsync()
+        }
+    }
+    
+    private func showOrderRoutesAsync() async {
+        var calculatedRoutes: [MKRoute] = []
+        
+        for customer in orderManager.customers {
+            do {
+                if let route = try await locationManager.calculateRoute(to: customer) {
+                    calculatedRoutes.append(route)
                 }
+            } catch {
+                print("Failed to calculate route to \(customer.name): \(error)")
             }
-            
-            await MainActor.run {
-                routes = calculatedRoutes
-                showRoutes = true
-            }
+        }
+        
+        await MainActor.run {
+            routes = calculatedRoutes
+            showRoutes = true
         }
     }
     
     private func hideRoutes() {
         showRoutes = false
         routes = []
+    }
+
+    private func centerOnUserLocation() {
+        shouldCenterOnUser = true
     }
 }
 
