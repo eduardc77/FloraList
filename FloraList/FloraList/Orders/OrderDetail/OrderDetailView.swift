@@ -36,6 +36,7 @@ private struct OrderDetailContentView: View {
     let viewModel: OrderDetailViewModel
     let locationManager: LocationManager
     @Environment(DeepLinkManager.self) private var deepLinkManager
+    @Environment(AnalyticsManager.self) private var analytics
 
     var body: some View {
         Form {
@@ -47,6 +48,9 @@ private struct OrderDetailContentView: View {
         .listSectionSpacing(20)
         .navigationTitle(viewModel.order.description)
         .navigationBarTitleDisplayMode(.large)
+        .onAppear {
+            analytics.trackScreenView(screenName: "Order Detail")
+        }
     }
 
     // MARK: - Sections

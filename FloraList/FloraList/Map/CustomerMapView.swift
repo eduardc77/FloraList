@@ -13,6 +13,7 @@ struct CustomerMapView: View {
     @Environment(OrderManager.self) private var orderManager
     @Environment(LocationManager.self) private var locationManager
     @Environment(CustomerMapCoordinator.self) private var coordinator
+    @Environment(AnalyticsManager.self) private var analytics
     @State private var showingCustomerOrders = false
     @State private var showRoutes = true
     @State private var routes: [MKRoute] = []
@@ -60,6 +61,9 @@ struct CustomerMapView: View {
                 set: { coordinator.selectedCustomer = $0 }
             )) { customer in
                 CustomerOrdersSheet(customer: customer)
+            }
+            .onAppear {
+                analytics.trackScreenView(screenName: "Customer Map")
             }
         }
     }

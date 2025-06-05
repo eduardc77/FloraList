@@ -39,6 +39,7 @@ struct OrdersListView: View {
 private struct OrdersListContentView: View {
     @State private var viewModel: OrdersListViewModel
     @Environment(OrdersCoordinator.self) private var coordinator
+    @Environment(AnalyticsManager.self) private var analytics
 
     init(viewModel: OrdersListViewModel) {
         self._viewModel = State(initialValue: viewModel)
@@ -73,6 +74,9 @@ private struct OrdersListContentView: View {
         }
         .task {
             await viewModel.loadOrders()
+        }
+        .onAppear {
+            analytics.trackScreenView(screenName: "Orders List")
         }
     }
 

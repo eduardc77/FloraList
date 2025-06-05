@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CEBBFF1F2DF1C5DC00EDB7EA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */; };
 		CEE962F62DEF305B0002A40F /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CEE962F52DEF305B0002A40F /* Networking */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEBBFF1F2DF1C5DC00EDB7EA /* FirebaseAnalytics in Frameworks */,
 				CEE962F62DEF305B0002A40F /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +144,7 @@
 			name = FloraList;
 			packageProductDependencies = (
 				CEE962F52DEF305B0002A40F /* Networking */,
+				CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */,
 			);
 			productName = FloraList;
 			productReference = CE876C792DEE43E4000B9E5C /* FloraList.app */;
@@ -225,6 +228,9 @@
 			);
 			mainGroup = CE876C702DEE43E4000B9E5C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CEBBFF1D2DF1C5DC00EDB7EA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE876C7A2DEE43E4000B9E5C /* Products */;
 			projectDirPath = "";
@@ -641,7 +647,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		CEBBFF1D2DF1C5DC00EDB7EA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEBBFF1D2DF1C5DC00EDB7EA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
 		CEE962F52DEF305B0002A40F /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
