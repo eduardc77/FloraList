@@ -22,7 +22,7 @@ struct CustomerOrdersSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
+            Form {
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
@@ -86,6 +86,8 @@ struct CustomerOrdersSheet: View {
                     }
                 }
             }
+            .listSectionSpacing(20)
+            .contentMargins(.top, 16, for: .scrollContent)
             .navigationTitle("Customer Details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
