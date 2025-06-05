@@ -33,8 +33,8 @@ The app includes location-based features. To test them properly:
 ### GraphQL vs REST
 The app defaults to GraphQL for API calls. To switch back to REST:
 ```swift
-// In ServiceFactory.swift
-static let networkingBackend: NetworkingBackend = .rest
+// In OrderManager.swift
+init(networkingType: NetworkingType = .rest)
 ```
 
 ### Firebase Analytics
