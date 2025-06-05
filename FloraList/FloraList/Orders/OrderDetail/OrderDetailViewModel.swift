@@ -13,6 +13,7 @@ final class OrderDetailViewModel {
     var notificationManager: NotificationManager
     var order: Order
     let customer: Customer?
+    @ObservationIgnored private let analyticsManager = AnalyticsManager.shared
 
     init(order: Order,
          customer: Customer?,
@@ -25,6 +26,15 @@ final class OrderDetailViewModel {
     func updateStatus(_ newStatus: OrderStatus) {
         let oldStatus = order.status
         order.status = newStatus
+
+        // Track status update if it actually changed
+        if oldStatus != newStatus {
+            analyticsManager.trackOrderStatusUpdate(
+                orderId: order.id,
+                oldStatus: oldStatus.displayName,
+                newStatus: newStatus.displayName
+            )
+        }
 
         // Only notify if order status changed and notifications are allowed
         if oldStatus != newStatus && notificationManager.isPermissionGranted {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct FloraListApp: App {
@@ -16,6 +17,11 @@ struct FloraListApp: App {
     @State private var errorMessage: String?
     @State private var notificationManager = NotificationManager()
     @State private var locationManager = LocationManager()
+    @State private var analyticsManager = AnalyticsManager.shared
+
+    init() {
+        FirebaseApp.configure()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -26,6 +32,7 @@ struct FloraListApp: App {
                 .environment(notificationManager)
                 .environment(locationManager)
                 .environment(deepLinkManager)
+                .environment(analyticsManager)
                 .task {
                     await notificationManager.setup()
                     locationManager.requestLocationPermission()
