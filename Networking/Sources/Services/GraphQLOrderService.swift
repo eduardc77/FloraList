@@ -25,7 +25,7 @@ public class GraphQLOrderService {
                 "description": "Roses Bouquet (GraphQL)",
                 "price": 45.99,
                 "customerID": "143",
-                "imageURL": "https://images.unsplash.com/photo-1559779080-6970e0186790?w=400",
+                "imageURL": "https://images.unsplash.com/photo-1559779080-6970e0186790?w=400&h=300",
                 "status": "new"
               },
               {
@@ -33,7 +33,7 @@ public class GraphQLOrderService {
                 "description": "Lilies Arrangement (GraphQL)",
                 "price": 62.50,
                 "customerID": "223",
-                "imageURL": "https://images.unsplash.com/photo-1519064438923-de4de326dfd1?w=400",
+                "imageURL": "https://images.unsplash.com/photo-1519064438923-de4de326dfd1?w=400&h=300",
                 "status": "pending"
               },
               {
@@ -41,7 +41,7 @@ public class GraphQLOrderService {
                 "description": "Sunflowers (GraphQL)",
                 "price": 38.75,
                 "customerID": "601",
-                "imageURL": "https://plus.unsplash.com/premium_photo-1676692121474-a3e3890d39f4?w=400",
+                "imageURL": "https://plus.unsplash.com/premium_photo-1676692121474-a3e3890d39f4?w=400&h=300",
                 "status": "new"
               },
               {
@@ -49,7 +49,7 @@ public class GraphQLOrderService {
                 "description": "Tulip Collection (GraphQL)",
                 "price": 55.00,
                 "customerID": "789",
-                "imageURL": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400",
+                "imageURL": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400&h=300",
                 "status": "pending"
               },
               {
@@ -57,7 +57,7 @@ public class GraphQLOrderService {
                 "description": "Orchid Elegance (GraphQL)",
                 "price": 89.99,
                 "customerID": "456",
-                "imageURL": "https://images.unsplash.com/photo-1562133558-4a3906179c67?w=400",
+                "imageURL": "https://images.unsplash.com/photo-1562133558-4a3906179c67?w=400&h=300",
                 "status": "delivered"
               }
             ]

@@ -126,6 +126,10 @@ struct CustomerMapView: View {
     }
     
     private func showOrderRoutesAsync() async {
+        await MainActor.run {
+            routes.removeAll()
+        }
+        
         var calculatedRoutes: [MKRoute] = []
         
         for customer in orderManager.customers {
@@ -146,6 +150,8 @@ struct CustomerMapView: View {
     
     private func hideRoutes() {
         showRoutes = false
+        // Properly clear routes to prevent MapKit leaks
+        routes.removeAll()
         routes = []
     }
 
