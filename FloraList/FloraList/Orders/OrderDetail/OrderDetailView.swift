@@ -46,8 +46,9 @@ private struct OrderDetailContentView: View {
             customerInfoSection
         }
         .listSectionSpacing(20)
+        .contentMargins(.top, 16, for: .scrollContent)
         .navigationTitle(viewModel.order.description)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             analytics.trackScreenView(screenName: "Order Detail")
         }

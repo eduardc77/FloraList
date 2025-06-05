@@ -86,6 +86,7 @@ private struct OrdersListContentView: View {
         Group {
             if viewModel.filteredAndSortedOrders.isEmpty {
                 ContentUnavailableView.search(text: viewModel.searchText)
+                    .listRowSeparator(.hidden)
             } else {
                 ForEach(viewModel.filteredAndSortedOrders) { order in
                     Button {
