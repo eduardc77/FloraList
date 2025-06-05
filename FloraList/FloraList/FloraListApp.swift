@@ -11,6 +11,7 @@ import SwiftUI
 struct FloraListApp: App {
     @State private var orderManager = OrderManager()
     @State private var coordinator = OrdersCoordinator()
+    @State private var mapCoordinator = CustomerMapCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
     @State private var errorMessage: String?
     @State private var notificationManager = NotificationManager()
@@ -18,13 +19,14 @@ struct FloraListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            ContentView()
                 .environment(orderManager)
                 .environment(coordinator)
+                .environment(mapCoordinator)
                 .environment(notificationManager)
                 .environment(locationManager)
+                .environment(deepLinkManager)
                 .task {
-                    deepLinkManager.setup(with: orderManager, coordinator: coordinator)
                     await notificationManager.setup()
                     locationManager.requestLocationPermission()
                     // Initial data fetch

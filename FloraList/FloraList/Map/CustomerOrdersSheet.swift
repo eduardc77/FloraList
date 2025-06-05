@@ -11,6 +11,8 @@ import Networking
 struct CustomerOrdersSheet: View {
     @Environment(OrderManager.self) private var orderManager
     @Environment(LocationManager.self) private var locationManager
+    @Environment(DeepLinkManager.self) private var deepLinkManager
+    @Environment(\.selectedTab) private var selectedTab
     @Environment(\.dismiss) private var dismiss
     let customer: Customer
 
@@ -64,6 +66,25 @@ struct CustomerOrdersSheet: View {
                         }
                     }
                 }
+
+                if !customerOrders.isEmpty {
+                    Section {
+                        ForEach(customerOrders) { order in
+                            Button {
+                                Task {
+                                    await navigateToOrder(order)
+                                }
+                            } label: {
+                                Text("View Order Details")
+                                    .foregroundStyle(.blue)
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity)
+                                    .contentShape(.rect)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
             }
             .navigationTitle("Customer Details")
             .navigationBarTitleDisplayMode(.inline)
@@ -77,5 +98,23 @@ struct CustomerOrdersSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+    }
+
+    private func navigateToOrder(_ order: Order) async {
+        do {
+            guard let url = URL(string: "floralist://orders/\(order.id)") else {
+                print("Failed to create deep link URL for order \(order.id)")
+                return
+            }
+            
+            // Switch to Orders tab first, then dismiss and navigate
+            selectedTab.wrappedValue = .orders
+            dismiss()
+            
+            // Handle the deep link - SwiftUI will coordinate the timing
+            try await deepLinkManager.handle(url)
+        } catch {
+            print("Failed to navigate to order \(order.id): \(error)")
+        }
     }
 }

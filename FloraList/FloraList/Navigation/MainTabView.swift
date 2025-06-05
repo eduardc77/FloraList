@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab: AppTab = .orders
+    @Binding var selectedTab: AppTab
     @Environment(OrderManager.self) private var orderManager
     @Environment(NotificationManager.self) private var notificationManager
+    @Environment(LocationManager.self) private var locationManager
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -32,6 +33,7 @@ struct MainTabView: View {
                     Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
                 }
         }
+        .environment(\.selectedTab, $selectedTab)
         .task {
             await orderManager.fetchData()
         }
@@ -39,7 +41,9 @@ struct MainTabView: View {
 }
 
 #Preview {
-    MainTabView()
+    @Previewable @State var selectedTab = AppTab.orders
+
+    MainTabView(selectedTab: $selectedTab)
         .environment(OrderManager())
         .environment(NotificationManager())
 }
