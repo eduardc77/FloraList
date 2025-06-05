@@ -117,17 +117,7 @@ private struct OrderDetailContentView: View {
                     LocationInfoLabel(customer: customer)
 
                     // Distance information
-                    if locationManager.isLocationAvailable {
-                        distanceInfoLabel(for: customer)
-                    } else {
-                        Label {
-                            Text("Enable location for distance")
-                                .foregroundStyle(.secondary)
-                        } icon: {
-                            Image(systemName: "location.slash")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    DistanceInfoLabel(customer: customer, locationManager: locationManager)
                 }
                 .font(.subheadline)
             } else {
@@ -146,16 +136,6 @@ private struct OrderDetailContentView: View {
             .background(viewModel.order.status.color.opacity(0.2))
             .foregroundStyle(viewModel.order.status.color)
             .clipShape(Capsule())
-    }
-
-    private func distanceInfoLabel(for customer: Customer) -> some View {
-        Label {
-            Text(locationManager.formattedDistance(to: customer))
-                .foregroundStyle(.primary)
-        } icon: {
-            Image(systemName: "ruler")
-                .foregroundStyle(.orange)
-        }
     }
 }
 
