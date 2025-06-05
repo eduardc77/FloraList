@@ -45,7 +45,7 @@ private struct OrderDetailContentView: View {
             statusSection
             customerInfoSection
         }
-        .listSectionSpacing(20)
+        .listSectionSpacing(16)
         .contentMargins(.top, 16, for: .scrollContent)
         .navigationTitle(viewModel.order.description)
         .navigationBarTitleDisplayMode(.inline)
@@ -60,41 +60,37 @@ private struct OrderDetailContentView: View {
         AsyncImage(url: URL(string: viewModel.order.imageURL)) { image in
             image
                 .resizable()
-                .frame(height: 300)
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
+                .frame(height: 320)
+                .clipped()
         } placeholder: {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.gray.opacity(0.3))
-                .frame(height: 300)
+                .frame(height: 320)
                 .overlay {
                     Image(systemName: "photo")
                         .font(.title)
                         .foregroundStyle(.secondary)
                 }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 12))
         .listRowInsets(.init())
         .listRowBackground(Color.clear)
     }
 
     private var orderInfo: some View {
-        Section {
-            VStack(alignment: .leading) {
-                Text("$\(viewModel.order.price, specifier: "%.2f")")
-                    .font(.title3)
-                    .fontWeight(.medium)
-
-                LabeledContent("Order #\(viewModel.order.id)") {
-                    statusBadge
-                }
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            }
+        LabeledContent("Order #\(viewModel.order.id)") {
+            Text("$\(viewModel.order.price, specifier: "%.2f")")
+                .font(.title3)
+                .fontWeight(.medium)
+                .foregroundStyle(.primary)
         }
+        .font(.callout)
+        .foregroundStyle(.secondary)
+        .padding(.vertical, 8)
     }
 
     private var statusSection: some View {
-        Section {
+
             Picker("Order Status", selection: .init(
                 get: { viewModel.order.status },
                 set: { viewModel.updateStatus($0) }
@@ -107,7 +103,7 @@ private struct OrderDetailContentView: View {
             }
             .pickerStyle(.menu)
         }
-    }
+
 
     private var customerInfoSection: some View {
         Section {
@@ -146,17 +142,6 @@ private struct OrderDetailContentView: View {
                     .foregroundStyle(.secondary)
             }
         }
-    }
-
-    private var statusBadge: some View {
-        Text(viewModel.order.status.displayName)
-            .font(.caption)
-            .fontWeight(.medium)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(viewModel.order.status.color.opacity(0.2))
-            .foregroundStyle(viewModel.order.status.color)
-            .clipShape(Capsule())
     }
 
     // MARK: - Actions
