@@ -9,7 +9,7 @@ import Foundation
 import Networking
 
 @Observable
-final class OrderManager {
+class OrderManager {
     private let orderService: OrderServiceProtocol
 
     private(set) var orders: [Order] = []
