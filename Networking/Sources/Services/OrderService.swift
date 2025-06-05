@@ -14,6 +14,8 @@ public class OrderService {
     public init() {}
 
     public func fetchOrders() async throws -> [Order] {
+        print("Using REST OrderService - fetching orders")
+        
         guard let url = URL(string: "\(baseURL)/orders") else {
             throw NetworkError.invalidURL
         }
@@ -27,6 +29,7 @@ public class OrderService {
 
         do {
             let orders = try JSONDecoder().decode([Order].self, from: data)
+            print("REST: Successfully fetched \(orders.count) orders")
             return orders
         } catch {
             throw NetworkError.decodingError(error)
@@ -34,6 +37,8 @@ public class OrderService {
     }
 
     public func fetchCustomers() async throws -> [Customer] {
+        print("Using REST OrderService - fetching customers")
+        
         guard let url = URL(string: "\(baseURL)/customers") else {
             throw NetworkError.invalidURL
         }
@@ -47,6 +52,7 @@ public class OrderService {
 
         do {
             let customers = try JSONDecoder().decode([Customer].self, from: data)
+            print("REST: Successfully fetched \(customers.count) customers")
             return customers
         } catch {
             throw NetworkError.decodingError(error)
