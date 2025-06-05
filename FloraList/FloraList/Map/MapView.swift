@@ -28,16 +28,8 @@ struct MapView: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .none
 
-        // Set initial region - smart logic for simulator vs device
-        let centerCoordinate: CLLocationCoordinate2D
-        
-        #if targetEnvironment(simulator)
-        // Simulator: Always use Romania default for demo
-        centerCoordinate = Self.defaultCoordinate
-        #else
-        // Real device: Use user location if available, otherwise default
-        centerCoordinate = userLocation ?? Self.defaultCoordinate
-        #endif
+        // Set initial region - use user location if available, otherwise default
+        let centerCoordinate = userLocation ?? Self.defaultCoordinate
         
         let initialRegion = MKCoordinateRegion(
             center: centerCoordinate,
@@ -83,17 +75,7 @@ struct MapView: UIViewRepresentable {
             isCenteredOnUser = true
         }
 
-        #if targetEnvironment(simulator)
-        // Simulator: Always center on customers for demo
-        if !customers.isEmpty {
-            let coordinates = customers.map {
-                CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
-            }
-            let region = coordinateRegion(for: coordinates)
-            uiView.setRegion(region, animated: true)
-        }
-        #else
-        // Real device: Only auto center on customers if no user location
+        // Auto center on customers if no user location available
         if !customers.isEmpty && userLocation == nil {
             let coordinates = customers.map {
                 CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
@@ -101,7 +83,6 @@ struct MapView: UIViewRepresentable {
             let region = coordinateRegion(for: coordinates)
             uiView.setRegion(region, animated: true)
         }
-        #endif
     }
 
     func makeCoordinator() -> Coordinator {
