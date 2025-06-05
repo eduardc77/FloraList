@@ -11,6 +11,7 @@ import Networking
 @Observable
 class OrderManager {
     private let orderService: OrderServiceProtocol
+    private(set) var networkingType: NetworkingType
 
     private(set) var orders: [Order] = []
     private(set) var customers: [Customer] = []
@@ -20,6 +21,7 @@ class OrderManager {
     // Default to GraphQL, but can be switched to REST
     init(networkingType: NetworkingType = .graphQL) {
         print("OrderManager using: \(networkingType)")
+        self.networkingType = networkingType
         self.orderService = ServiceFactory.createOrderService(type: networkingType)
     }
 

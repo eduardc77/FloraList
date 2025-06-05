@@ -27,7 +27,7 @@ struct MainTabView: View {
                     Label(AppTab.map.title, systemImage: AppTab.map.icon)
                 }
 
-            Text("Settings")
+            SettingsView()
                 .tag(AppTab.settings)
                 .tabItem {
                     Label(AppTab.settings.title, systemImage: AppTab.settings.icon)

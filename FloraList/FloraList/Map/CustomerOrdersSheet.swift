@@ -86,7 +86,7 @@ struct CustomerOrdersSheet: View {
                     }
                 }
             }
-            .listSectionSpacing(20)
+            .listSectionSpacing(16)
             .contentMargins(.top, 16, for: .scrollContent)
             .navigationTitle("Customer Details")
             .navigationBarTitleDisplayMode(.inline)
