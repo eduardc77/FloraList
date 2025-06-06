@@ -34,9 +34,6 @@ struct MainTabView: View {
                 }
         }
         .environment(\.selectedTab, $selectedTab)
-        .task {
-            await orderManager.fetchData()
-        }
     }
 }
 
@@ -44,6 +41,6 @@ struct MainTabView: View {
     @Previewable @State var selectedTab = AppTab.orders
 
     MainTabView(selectedTab: $selectedTab)
-        .environment(OrderManager())
+        .environment(OrderManager(notificationManager: NotificationManager()))
         .environment(NotificationManager())
 }

@@ -31,7 +31,7 @@ final class MockOrderManager: OrderManager {
     }
 
     static func withTestData() -> MockOrderManager {
-        let manager = MockOrderManager()
+        let manager = MockOrderManager(notificationManager: NotificationManager())
 
         let orders = [
             Order(id: 1, description: "Roses Bouquet", price: 45.99, customerID: 143, imageURL: "", status: .new),
@@ -54,6 +54,6 @@ final class MockOrderManager: OrderManager {
     }
 
     static func empty() -> MockOrderManager {
-        return MockOrderManager()
+        return MockOrderManager(notificationManager: NotificationManager())
     }
 } 

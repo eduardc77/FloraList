@@ -30,7 +30,7 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environment(OrderManager())
+        .environment(OrderManager(notificationManager: NotificationManager()))
         .environment(OrdersCoordinator())
         .environment(CustomerMapCoordinator())
         .environment(DeepLinkManager())

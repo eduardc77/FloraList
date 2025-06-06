@@ -9,9 +9,9 @@ import SwiftUI
 import Networking
 
 struct OrderDetailView: View {
-    @Environment(NotificationManager.self) private var notificationManager
     @Environment(LocationManager.self) private var locationManager
     @Environment(DeepLinkManager.self) private var deepLinkManager
+    @Environment(OrderManager.self) private var orderManager
     private let order: Order
     private let customer: Customer?
 
@@ -25,7 +25,7 @@ struct OrderDetailView: View {
             viewModel: OrderDetailViewModel(
                 order: order,
                 customer: customer,
-                notificationManager: notificationManager
+                orderManager: orderManager
             ),
             locationManager: locationManager
         )
@@ -175,7 +175,7 @@ private struct OrderDetailContentView: View {
             customer: Customer(id: 1, name: "John Doe", latitude: 46.562789, longitude: 23.784734)
         )
     }
-    .environment(NotificationManager())
     .environment(LocationManager())
     .environment(DeepLinkManager())
+    .environment(OrderManager(notificationManager: NotificationManager()))
 }

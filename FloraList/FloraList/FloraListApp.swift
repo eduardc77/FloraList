@@ -10,17 +10,20 @@ import FirebaseCore
 
 @main
 struct FloraListApp: App {
-    @State private var orderManager = OrderManager()
+    @State private var notificationManager = NotificationManager()
+    @State private var orderManager: OrderManager
     @State private var coordinator = OrdersCoordinator()
     @State private var mapCoordinator = CustomerMapCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
     @State private var errorMessage: String?
-    @State private var notificationManager = NotificationManager()
     @State private var locationManager = LocationManager()
     @State private var analyticsManager = AnalyticsManager.shared
 
     init() {
         FirebaseApp.configure()
+        let notificationManager = NotificationManager()
+        self._notificationManager = State(initialValue: notificationManager)
+        self._orderManager = State(initialValue: OrderManager(notificationManager: notificationManager))
     }
 
     var body: some Scene {
@@ -36,8 +39,6 @@ struct FloraListApp: App {
                 .task {
                     await notificationManager.setup()
                     locationManager.requestLocationPermission()
-                    // Initial data fetch
-                    await orderManager.fetchData()
                 }
                 .onOpenURL { url in
                     Task {

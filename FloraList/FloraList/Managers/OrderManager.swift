@@ -12,6 +12,8 @@ import Networking
 class OrderManager {
     private let orderService: OrderServiceProtocol
     private(set) var networkingType: NetworkingType
+    private let analyticsManager = AnalyticsManager.shared
+    private let notificationManager: NotificationManager
 
     private(set) var orders: [Order] = []
     private(set) var customers: [Customer] = []
@@ -19,10 +21,11 @@ class OrderManager {
     var error: Error?
 
     // Default to GraphQL, but can be switched to REST
-    init(networkingType: NetworkingType = .graphQL) {
+    init(networkingType: NetworkingType = .graphQL, notificationManager: NotificationManager) {
         print("OrderManager using: \(networkingType)")
         self.networkingType = networkingType
         self.orderService = ServiceFactory.createOrderService(type: networkingType)
+        self.notificationManager = notificationManager
     }
 
     @MainActor
@@ -45,6 +48,8 @@ class OrderManager {
 
     @MainActor
     func updateOrderStatus(_ order: Order, status: OrderStatus) async throws {
+        let oldStatus = order.status
+        
         if let index = orders.firstIndex(where: { $0.id == order.id }) {
             orders[index].status = status
         }
@@ -52,6 +57,29 @@ class OrderManager {
         // In a real app, we would make an API call here
         // For MVP, we'll just simulate a delay
         try await Task.sleep(for: .seconds(0.5))
+        
+        // Track status update if it actually changed
+        if oldStatus != status {
+            analyticsManager.trackOrderStatusUpdate(
+                orderId: order.id,
+                oldStatus: oldStatus.displayName,
+                newStatus: status.displayName
+            )
+        }
+
+        // Only notify if order status changed and notifications are allowed
+        if oldStatus != status && notificationManager.isPermissionGranted {
+            print("Status changed from \(oldStatus) to \(status)")
+            do {
+                try await notificationManager.scheduleOrderStatusNotification(
+                    orderId: order.id,
+                    description: order.description,
+                    status: status.displayName.lowercased()
+                )
+            } catch {
+                print("Failed to schedule notification: \(error)")
+            }
+        }
     }
 
     func customer(for order: Order) -> Customer? {

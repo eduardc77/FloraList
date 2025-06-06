@@ -25,7 +25,7 @@ struct OrderManagerTests {
 
     @Test("Fetch data loads orders and customers")
     func fetchDataLoadsOrdersAndCustomers() async {
-        let manager = OrderManager()
+        let manager = OrderManager(notificationManager: NotificationManager())
 
         await manager.fetchData()
 
