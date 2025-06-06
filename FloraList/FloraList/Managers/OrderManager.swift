@@ -10,7 +10,7 @@ import Networking
 
 @Observable
 class OrderManager {
-    private let orderService: OrderServiceProtocol
+    private var orderService: OrderServiceProtocol
     private(set) var networkingType: NetworkingType
     private let analyticsManager = AnalyticsManager.shared
     private let notificationManager: NotificationManager
@@ -88,5 +88,15 @@ class OrderManager {
 
     func findOrder(by id: Int) -> Order? {
         orders.first { $0.id == id }
+    }
+    
+    @MainActor
+    func switchToNetworkingType(_ type: NetworkingType) async {
+        guard type != networkingType else { return }
+        
+        networkingType = type
+        orderService = ServiceFactory.createOrderService(type: type)
+
+        await fetchData()
     }
 }
