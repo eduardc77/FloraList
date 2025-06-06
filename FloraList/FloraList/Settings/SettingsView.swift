@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Networking
 
 struct SettingsView: View {
     @Environment(LocationManager.self) private var locationManager
@@ -39,19 +40,20 @@ struct SettingsView: View {
                 } footer: {
                     Text("Tap any permission to change it in Settings.")
                 }
-
+                
+                Section {
+                    networkingRow
+                } header: {
+                    Text("Developer")
+                } footer: {
+                    Text("Switch between REST and GraphQL networking implementations.")
+                }
+                
                 Section("About") {
                     HStack {
                         Text("Version")
                         Spacer()
                         Text(appVersion)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    HStack {
-                        Text("Networking")
-                        Spacer()
-                        Text(networkingTypeText)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -168,6 +170,21 @@ struct SettingsView: View {
         if UIApplication.shared.canOpenURL(settingsUrl) {
             UIApplication.shared.open(settingsUrl)
         }
+    }
+    
+    private var networkingRow: some View {
+        Picker("API Implementation", selection: Binding(
+            get: { orderManager.networkingType },
+            set: { newType in
+                Task {
+                    await orderManager.switchToNetworkingType(newType)
+                }
+            }
+        )) {
+            Text("REST").tag(NetworkingType.rest)
+            Text("GraphQL").tag(NetworkingType.graphQL)
+        }
+        .pickerStyle(.menu)
     }
 }
 
