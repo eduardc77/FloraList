@@ -10,45 +10,32 @@ import Networking
 
 @Observable
 final class OrderDetailViewModel {
-    var notificationManager: NotificationManager
+    private let orderManager: OrderManager
     var order: Order
     let customer: Customer?
-    @ObservationIgnored private let analyticsManager = AnalyticsManager.shared
 
     init(order: Order,
          customer: Customer?,
-         notificationManager: NotificationManager) {
+         orderManager: OrderManager) {
         self.order = order
         self.customer = customer
-        self.notificationManager = notificationManager
+        self.orderManager = orderManager
     }
 
     func updateStatus(_ newStatus: OrderStatus) {
         let oldStatus = order.status
-        order.status = newStatus
-
-        // Track status update if it actually changed
-        if oldStatus != newStatus {
-            analyticsManager.trackOrderStatusUpdate(
-                orderId: order.id,
-                oldStatus: oldStatus.displayName,
-                newStatus: newStatus.displayName
-            )
-        }
-
-        // Only notify if order status changed and notifications are allowed
-        if oldStatus != newStatus && notificationManager.isPermissionGranted {
-            print("Status changed from \(oldStatus) to \(newStatus)")
-            Task {
-                do {
-                    try await notificationManager.scheduleOrderStatusNotification(
-                        orderId: order.id,
-                        description: order.description,
-                        status: order.status.displayName.lowercased()
-                    )
-                } catch {
-                    print("Failed to schedule notification: \(error)")
-                }
+        
+        // Update shared state through the manager (includes analytics & notifications)
+        Task {
+            do {
+                try await orderManager.updateOrderStatus(order, status: newStatus)
+                
+                // Update local order object for immediate UI update
+                order.status = newStatus
+            } catch {
+                print("Failed to update order status: \(error)")
+                // Revert local status on error
+                order.status = oldStatus
             }
         }
     }

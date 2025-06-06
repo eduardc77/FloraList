@@ -176,5 +176,5 @@ struct SettingsView: View {
         .environment(LocationManager())
         .environment(NotificationManager())
         .environment(AnalyticsManager.shared)
-        .environment(OrderManager())
+        .environment(OrderManager(notificationManager: NotificationManager()))
 }
