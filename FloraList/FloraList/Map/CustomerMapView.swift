@@ -14,56 +14,72 @@ struct CustomerMapView: View {
     @Environment(LocationManager.self) private var locationManager
     @Environment(CustomerMapCoordinator.self) private var coordinator
     @Environment(AnalyticsManager.self) private var analytics
-    @State private var showingCustomerOrders = false
-    @State private var showRoutes = true
-    @State private var routes: [MKRoute] = []
-    @State private var shouldCenterOnUser = false
-    @State private var isCenteredOnUser = false
-
+    
     var body: some View {
         NavigationStack {
-            ZStack {
-                if orderManager.isLoading {
-                    loadingView
-                } else if let error = orderManager.error {
-                    errorView(error.localizedDescription)
-                } else {
-                    mapView
-                }
-            }
+            CustomerMapContentView(
+                viewModel: CustomerMapViewModel(
+                    orderManager: orderManager,
+                    locationManager: locationManager
+                )
+            )
             .navigationTitle("Customer Locations")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    // Routes toggle button
-                    Button {
-                        if showRoutes {
-                            hideRoutes()
-                        } else {
-                            showOrderRoutes()
-                        }
-                    } label: {
-                        Image(systemName: showRoutes ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
+        }
+        .sheet(item: .init(
+            get: { coordinator.selectedCustomer },
+            set: { coordinator.selectedCustomer = $0 }
+        )) { customer in
+            CustomerOrdersSheet(customer: customer)
+        }
+        .onAppear {
+            analytics.trackScreenView(screenName: "Customer Map")
+        }
+    }
+}
+
+private struct CustomerMapContentView: View {
+    @State private var viewModel: CustomerMapViewModel
+    @Environment(CustomerMapCoordinator.self) private var coordinator
+    @Environment(AnalyticsManager.self) private var analytics
+    @Environment(LocationManager.self) private var locationManager
+    @State private var showingCustomerOrders = false
+    @State private var shouldCenterOnUser = false
+    @State private var isCenteredOnUser = false
+    
+    init(viewModel: CustomerMapViewModel) {
+        self._viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        ZStack {
+            if viewModel.isLoading {
+                loadingView
+            } else if let error = viewModel.error {
+                errorView(error.localizedDescription)
+            } else {
+                mapView
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                // Routes toggle button
+                Button {
+                    Task {
+                        await viewModel.toggleRoutes()
                     }
-                    
-                    // Center on user location button
-                    if locationManager.isLocationAvailable {
-                        Button {
-                            centerOnUserLocation()
-                        } label: {
-                            Image(systemName: isCenteredOnUser ? "location.fill" : "location")
-                        }
+                } label: {
+                    Image(systemName: viewModel.showRoutes ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
+                }
+                
+                // Center on user location button
+                if locationManager.isLocationAvailable {
+                    Button {
+                        centerOnUserLocation()
+                    } label: {
+                        Image(systemName: isCenteredOnUser ? "location.fill" : "location")
                     }
                 }
-            }
-            .sheet(item: .init(
-                get: { coordinator.selectedCustomer },
-                set: { coordinator.selectedCustomer = $0 }
-            )) { customer in
-                CustomerOrdersSheet(customer: customer)
-            }
-            .onAppear {
-                analytics.trackScreenView(screenName: "Customer Map")
             }
         }
     }
@@ -72,21 +88,21 @@ struct CustomerMapView: View {
 
     private var mapView: some View {
         MapView(
-            customers: orderManager.customers,
+            customers: viewModel.customers,
             selectedCustomer: .init(
                 get: { coordinator.selectedCustomer },
                 set: { coordinator.selectedCustomer = $0 }
             ),
             userLocation: locationManager.currentLocation?.coordinate,
-            showRoutes: $showRoutes,
-            routes: routes,
+            showRoutes: .constant(viewModel.showRoutes),
+            routes: viewModel.routes,
             shouldCenterOnUser: $shouldCenterOnUser,
             isCenteredOnUser: $isCenteredOnUser
         )
         .task {
             // Calculate routes on initial load since showRoutes is true by default
-            if showRoutes && routes.isEmpty {
-                await showOrderRoutesAsync()
+            if viewModel.showRoutes && viewModel.routes.isEmpty {
+                await viewModel.showOrderRoutes()
             }
         }
         .onChange(of: coordinator.selectedCustomer) { _, customer in
@@ -111,49 +127,15 @@ struct CustomerMapView: View {
             Text(message)
         } actions: {
             Button("Try Again") {
-                Task { await orderManager.fetchData() }
+                Task { 
+                    await viewModel.retryDataFetch()
+                }
             }
             .buttonStyle(.borderedProminent)
         }
     }
 
-    // MARK: - Route Management
-    
-    private func showOrderRoutes() {
-        Task {
-            await showOrderRoutesAsync()
-        }
-    }
-    
-    private func showOrderRoutesAsync() async {
-        await MainActor.run {
-            routes.removeAll()
-        }
-        
-        var calculatedRoutes: [MKRoute] = []
-        
-        for customer in orderManager.customers {
-            do {
-                if let route = try await locationManager.calculateRoute(to: customer) {
-                    calculatedRoutes.append(route)
-                }
-            } catch {
-                print("Failed to calculate route to \(customer.name): \(error)")
-            }
-        }
-        
-        await MainActor.run {
-            routes = calculatedRoutes
-            showRoutes = true
-        }
-    }
-    
-    private func hideRoutes() {
-        showRoutes = false
-        // Properly clear routes to prevent MapKit leaks
-        routes.removeAll()
-        routes = []
-    }
+    // MARK: - User Location
 
     private func centerOnUserLocation() {
         shouldCenterOnUser = true
@@ -162,6 +144,8 @@ struct CustomerMapView: View {
 
 #Preview {
     CustomerMapView()
-        .environment(OrderManager())
+        .environment(OrderManager(notificationManager: NotificationManager()))
         .environment(LocationManager())
+        .environment(CustomerMapCoordinator())
+        .environment(AnalyticsManager.shared)
 }
