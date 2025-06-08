@@ -89,12 +89,9 @@ private struct OrdersListContentView: View {
                     .listRowSeparator(.hidden)
             } else {
                 ForEach(viewModel.filteredAndSortedOrders) { order in
-                    Button {
+                    OrderCard(order: order, customer: viewModel.customer(for: order)) {
                         coordinator.showOrderDetail(order)
-                    } label: {
-                        OrderRowView(order: order, customer: viewModel.customer(for: order))
                     }
-                    .contentShape(.rect)
                 }
             }
         }
