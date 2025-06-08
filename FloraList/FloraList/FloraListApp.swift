@@ -15,9 +15,10 @@ struct FloraListApp: App {
     @State private var coordinator = OrdersCoordinator()
     @State private var mapCoordinator = CustomerMapCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
-    @State private var errorMessage: String?
     @State private var locationManager = LocationManager()
     @State private var analyticsManager = AnalyticsManager.shared
+
+    @State private var deepLinkErrorMessage: String?
 
     init() {
         FirebaseApp.configure()
@@ -45,21 +46,21 @@ struct FloraListApp: App {
                         do {
                             try await deepLinkManager.handle(url)
                         } catch {
-                            errorMessage = error.localizedDescription
+                            deepLinkErrorMessage = error.localizedDescription
                         }
                     }
                 }
                 .alert("Deep Link Error",
                        isPresented: .init(
-                        get: { errorMessage != nil },
-                        set: { if !$0 { errorMessage = nil } }
+                        get: { deepLinkErrorMessage != nil },
+                        set: { if !$0 { deepLinkErrorMessage = nil } }
                        )) {
                     Button("OK") {
-                        errorMessage = nil
+                        deepLinkErrorMessage = nil
                     }
                 } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
+                    if let deepLinkErrorMessage {
+                        Text(deepLinkErrorMessage)
                     }
                 }
         }

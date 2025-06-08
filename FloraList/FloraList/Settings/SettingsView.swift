@@ -13,24 +13,29 @@ struct SettingsView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(AnalyticsManager.self) private var analytics
     @Environment(OrderManager.self) private var orderManager
-    @State private var showingLocationAlert = false
-    @State private var showingNotificationAlert = false
-
-    private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
-    }
-
-    private var networkingTypeText: String {
-        switch orderManager.networkingType {
-        case .rest:
-            return "REST"
-        case .graphQL:
-            return "GraphQL"
-        }
-    }
 
     var body: some View {
         NavigationView {
+            SettingsContentView(
+                viewModel: SettingsViewModel(
+                    locationManager: locationManager,
+                    notificationManager: notificationManager,
+                    analyticsManager: analytics,
+                    orderManager: orderManager
+                )
+            )
+        }
+    }
+}
+
+private struct SettingsContentView: View {
+    @State private var viewModel: SettingsViewModel
+
+    init(viewModel: SettingsViewModel) {
+        self._viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
             List {
                 Section {
                     locationRow
@@ -53,41 +58,38 @@ struct SettingsView: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text(appVersion)
+                        Text(viewModel.appVersion)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
             .navigationTitle("Settings")
             .onAppear {
-                analytics.trackScreenView(screenName: "Settings")
-                // Refresh permission status when view appears
-                Task {
-                    await notificationManager.checkCurrentPermissionStatus()
+                viewModel.onAppear()
+            }
+            .alert("Location Permission", isPresented: $viewModel.showingLocationAlert) {
+                Button("Open Settings") {
+                    viewModel.openAppSettings()
                 }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text(viewModel.locationAlertMessage)
             }
-        }
-        .alert("Location Permission", isPresented: $showingLocationAlert) {
-            Button("Open Settings") {
-                openAppSettings()
+            .alert("Notification Permission", isPresented: $viewModel.showingNotificationAlert) {
+                Button("Open Settings") {
+                    viewModel.openAppSettings()
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text(viewModel.notificationAlertMessage)
             }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("To \(locationManager.isLocationAvailable ? "disable" : "enable") location access, go to Settings > Privacy & Security > Location Services > FloraList.")
-        }
-        .alert("Notification Permission", isPresented: $showingNotificationAlert) {
-            Button("Open Settings") {
-                openAppSettings()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("To \(notificationManager.isPermissionGranted ? "disable" : "enable") notifications, go to Settings > Notifications > FloraList.")
-        }
     }
+
+    // MARK: - Subviews
 
     private var locationRow: some View {
         Button {
-            showingLocationAlert = true
+            viewModel.showLocationAlert()
         } label: {
             HStack {
                 Image(systemName: "location.fill")
@@ -106,11 +108,11 @@ struct SettingsView: View {
 
                 // Read-only status indicator
                 HStack(spacing: 6) {
-                    Text(locationManager.isLocationAvailable ? "Enabled" : "Disabled")
+                    Text(viewModel.locationStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Image(systemName: locationManager.isLocationAvailable ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundStyle(locationManager.isLocationAvailable ? .green : .red)
+                    Image(systemName: viewModel.isLocationEnabled ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .foregroundStyle(viewModel.isLocationEnabled ? .green : .red)
                         .font(.caption)
 
                     // Chevron to indicate it's tappable
@@ -126,7 +128,7 @@ struct SettingsView: View {
 
     private var notificationRow: some View {
         Button {
-            showingNotificationAlert = true
+            viewModel.showNotificationAlert()
         } label: {
             HStack {
                 Image(systemName: "bell.fill")
@@ -145,11 +147,11 @@ struct SettingsView: View {
 
                 // Read-only status indicator
                 HStack(spacing: 6) {
-                    Text(notificationManager.isPermissionGranted ? "Enabled" : "Disabled")
+                    Text(viewModel.notificationStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Image(systemName: notificationManager.isPermissionGranted ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundStyle(notificationManager.isPermissionGranted ? .green : .red)
+                    Image(systemName: viewModel.isNotificationEnabled ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .foregroundStyle(viewModel.isNotificationEnabled ? .green : .red)
                         .font(.caption)
 
                     // Chevron to indicate it's tappable
@@ -162,23 +164,11 @@ struct SettingsView: View {
         .buttonStyle(.plain)
     }
 
-    private func openAppSettings() {
-        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-            return
-        }
-
-        if UIApplication.shared.canOpenURL(settingsUrl) {
-            UIApplication.shared.open(settingsUrl)
-        }
-    }
-    
     private var networkingRow: some View {
         Picker("API Implementation", selection: Binding(
-            get: { orderManager.networkingType },
+            get: { viewModel.currentNetworkingType },
             set: { newType in
-                Task {
-                    await orderManager.switchToNetworkingType(newType)
-                }
+                viewModel.switchNetworkingType(to: newType)
             }
         )) {
             Text("REST").tag(NetworkingType.rest)

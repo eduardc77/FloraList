@@ -25,7 +25,8 @@ struct OrderDetailView: View {
             viewModel: OrderDetailViewModel(
                 order: order,
                 customer: customer,
-                orderManager: orderManager
+                orderManager: orderManager,
+                deepLinkManager: deepLinkManager
             ),
             locationManager: locationManager
         )
@@ -35,7 +36,6 @@ struct OrderDetailView: View {
 private struct OrderDetailContentView: View {
     let viewModel: OrderDetailViewModel
     let locationManager: LocationManager
-    @Environment(DeepLinkManager.self) private var deepLinkManager
     @Environment(AnalyticsManager.self) private var analytics
 
     var body: some View {
@@ -64,7 +64,7 @@ private struct OrderDetailContentView: View {
                 .frame(height: 320)
                 .clipped()
         } placeholder: {
-            RoundedRectangle(cornerRadius: 12)
+            Rectangle()
                 .fill(Color.gray.opacity(0.3))
                 .frame(height: 320)
                 .overlay {
@@ -90,19 +90,18 @@ private struct OrderDetailContentView: View {
     }
 
     private var statusSection: some View {
-
-            Picker("Order Status", selection: .init(
-                get: { viewModel.order.status },
-                set: { viewModel.updateStatus($0) }
-            )) {
-                ForEach(OrderStatus.allCases, id: \.self) { status in
-                    Label(status.displayName, systemImage: status.systemImage)
-                        .foregroundStyle(status.color)
-                        .tag(status)
-                }
+        Picker("Order Status", selection: .init(
+            get: { viewModel.order.status },
+            set: { viewModel.updateStatus($0) }
+        )) {
+            ForEach(OrderStatus.allCases, id: \.self) { status in
+                Label(status.displayName, systemImage: status.systemImage)
+                    .foregroundStyle(status.color)
+                    .tag(status)
             }
-            .pickerStyle(.menu)
         }
+        .pickerStyle(.menu)
+    }
 
 
     private var customerInfoSection: some View {
@@ -127,7 +126,7 @@ private struct OrderDetailContentView: View {
                 // Deep link to customer on map
                 Button {
                     Task {
-                        await navigateToCustomerOnMap(customer)
+                        await viewModel.navigateToCustomerOnMap(customer)
                     }
                 } label: {
                     Label("View on Map", systemImage: "map")
@@ -144,21 +143,6 @@ private struct OrderDetailContentView: View {
         }
     }
 
-    // MARK: - Actions
-    
-    private func navigateToCustomerOnMap(_ customer: Customer) async {
-        do {
-            guard let url = URL(string: "floralist://map/customer/\(customer.id)") else {
-                print("Failed to create deep link URL for customer \(customer.id)")
-                return
-            }
-            
-            // Handle the deep link
-            try await deepLinkManager.handle(url)
-        } catch {
-            print("Failed to navigate to customer \(customer.id): \(error)")
-        }
-    }
 }
 
 #Preview {
