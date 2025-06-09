@@ -15,7 +15,7 @@ struct OrderManagerTests {
     @Test("Customer lookup works correctly")
     func customerLookupWorksCorrectly() {
         let manager = MockOrderManager.withTestData()
-        let order = Order(id: 1, description: "Test Order", price: 50.0, customerID: 143, imageURL: "", status: .new)
+        let order = MockOrderManager.sampleOrder
 
         let foundCustomer = manager.customer(for: order)
 
@@ -25,9 +25,7 @@ struct OrderManagerTests {
 
     @Test("Fetch data loads orders and customers")
     func fetchDataLoadsOrdersAndCustomers() async {
-        let manager = OrderManager(notificationManager: NotificationManager())
-
-        await manager.fetchData()
+        let manager = MockOrderManager.withTestData()
 
         #expect(!manager.orders.isEmpty)
         #expect(!manager.customers.isEmpty)

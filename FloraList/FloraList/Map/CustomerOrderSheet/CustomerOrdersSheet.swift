@@ -25,7 +25,7 @@ struct CustomerOrdersSheet: View {
                     locationManager: locationManager,
                     deepLinkManager: deepLinkManager,
                     selectedTab: selectedTab,
-                    dismiss: dismiss
+                    dismiss: { dismiss() }
                 )
             )
             .navigationTitle("Customer Details")

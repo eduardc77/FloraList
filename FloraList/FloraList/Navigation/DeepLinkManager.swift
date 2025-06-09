@@ -9,7 +9,7 @@ import SwiftUI
 import Networking
 
 @Observable
-final class DeepLinkManager {
+class DeepLinkManager {
     private var orderManager: OrderManager?
     private var coordinator: OrdersCoordinator?
     private var mapCoordinator: CustomerMapCoordinator?
