@@ -14,12 +14,12 @@ struct GraphQLOrdersData: Codable {
 }
 
 struct GraphQLOrder: Codable {
-    let id: String
+    let id: Int
     let description: String
     let price: Double
-    let customerID: String
+    let customerID: Int
     let imageURL: String
-    let status: String
+    let status: String?
 }
 
 struct GraphQLCustomersResponse: Codable {
@@ -31,7 +31,7 @@ struct GraphQLCustomersData: Codable {
 }
 
 struct GraphQLCustomer: Codable {
-    let id: String
+    let id: Int
     let name: String
     let latitude: Double
     let longitude: Double

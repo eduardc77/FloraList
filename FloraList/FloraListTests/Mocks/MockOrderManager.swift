@@ -37,7 +37,10 @@ final class MockOrderManager: OrderManager {
             Order(id: 1, description: "Roses Bouquet", price: 45.99, customerID: 143, imageURL: "", status: .new),
             Order(id: 2, description: "Lilies Arrangement", price: 62.50, customerID: 223, imageURL: "", status: .pending),
             Order(id: 3, description: "Sunflowers", price: 38.75, customerID: 601, imageURL: "", status: .delivered),
-            Order(id: 4, description: "Tulip Collection", price: 55.00, customerID: 789, imageURL: "", status: .new)
+            Order(id: 4, description: "Tulip Collection", price: 55.00, customerID: 789, imageURL: "", status: .new),
+            Order(id: 5, description: "Orchid Arrangement", price: 89.99, customerID: 143, imageURL: "", status: .pending),
+            Order(id: 6, description: "Carnation Bouquet", price: 32.50, customerID: 143, imageURL: "", status: .delivered),
+            Order(id: 7, description: "Daffodil Collection", price: 41.75, customerID: 223, imageURL: "", status: .new)
         ]
 
         let customers = [
@@ -55,5 +58,13 @@ final class MockOrderManager: OrderManager {
 
     static func empty() -> MockOrderManager {
         return MockOrderManager(notificationManager: NotificationManager())
+    }
+    
+    static var sampleOrder: Order {
+        return Order(id: 1, description: "Roses Bouquet", price: 45.99, customerID: 143, imageURL: "", status: .new)
+    }
+    
+    static var sampleCustomer: Customer {
+        return Customer(id: 143, name: "Cristina", latitude: 46.7712, longitude: 23.6236)
     }
 } 

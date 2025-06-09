@@ -15,7 +15,7 @@ class CustomerOrdersSheetViewModel {
     private let locationManager: LocationManager
     private let deepLinkManager: DeepLinkManager
     private let selectedTab: Binding<AppTab>
-    private let dismiss: DismissAction
+    private let dismiss: () -> Void
 
     let customer: Customer
 
@@ -37,7 +37,7 @@ class CustomerOrdersSheetViewModel {
         locationManager: LocationManager,
         deepLinkManager: DeepLinkManager,
         selectedTab: Binding<AppTab>,
-        dismiss: DismissAction
+        dismiss: @escaping () -> Void
     ) {
         self.customer = customer
         self.orderManager = orderManager

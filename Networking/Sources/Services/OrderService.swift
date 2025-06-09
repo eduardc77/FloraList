@@ -9,9 +9,11 @@ import Foundation
 
 public class OrderService {
     private let baseURL = "http://demo7677712.mockable.io"
-    private let session = URLSession.shared
+    private let session: URLSession
 
-    public init() {}
+    public init(session: URLSession = .shared) {
+        self.session = session
+    }
 
     public func fetchOrders() async throws -> [Order] {
         print("Using REST OrderService - fetching orders")

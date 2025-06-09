@@ -8,153 +8,106 @@
 import Foundation
 
 public class GraphQLOrderService {
-    public init() {}
+    private let session: URLSession
+    private let baseURL = "https://ba8312ca-45f2-4ed3-86b6-047cf8926e92.mock.pstmn.io/graphql"
+
+    public init(session: URLSession = .shared) {
+        self.session = session
+    }
 
     public func fetchOrders() async throws -> [Order] {
         print("Using GraphQL OrderService - fetching orders")
 
-        // Simulate GraphQL query processing time
-        try await Task.sleep(for: .milliseconds(200))
-
-        let mockGraphQLResponse = """
+        let query = """
         {
-          "data": {
-            "orders": [
-              {
-                "id": "1",
-                "description": "Roses Bouquet (GraphQL)",
-                "price": 45.99,
-                "customerID": "143",
-                "imageURL": "https://images.unsplash.com/photo-1559779080-6970e0186790?w=400&h=300",
-                "status": "new"
-              },
-              {
-                "id": "2", 
-                "description": "Lilies Arrangement (GraphQL)",
-                "price": 62.50,
-                "customerID": "223",
-                "imageURL": "https://images.unsplash.com/photo-1519064438923-de4de326dfd1?w=400&h=300",
-                "status": "pending"
-              },
-              {
-                "id": "3",
-                "description": "Sunflowers (GraphQL)",
-                "price": 38.75,
-                "customerID": "601",
-                "imageURL": "https://plus.unsplash.com/premium_photo-1676692121474-a3e3890d39f4?w=400&h=300",
-                "status": "new"
-              },
-              {
-                "id": "4",
-                "description": "Tulip Collection (GraphQL)",
-                "price": 55.00,
-                "customerID": "789",
-                "imageURL": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400&h=300",
-                "status": "pending"
-              },
-              {
-                "id": "5",
-                "description": "Orchid Elegance (GraphQL)",
-                "price": 89.99,
-                "customerID": "456",
-                "imageURL": "https://images.unsplash.com/photo-1562133558-4a3906179c67?w=400&h=300",
-                "status": "delivered"
-              }
-            ]
+          orders {
+            id
+            description
+            price
+            customerID
+            imageURL
+            status
           }
         }
         """
 
-        let orders = try parseOrdersFromGraphQLResponse(mockGraphQLResponse)
-        print("GraphQL: Successfully fetched \(orders.count) orders")
+        let response = try await executeGraphQLQuery(query: query)
+        print("GraphQL Orders Response: \(String(data: response, encoding: .utf8) ?? "Unable to decode")")
+        
+        let graphqlResponse = try JSONDecoder().decode(GraphQLOrdersResponse.self, from: response)
+        let orders: [Order] = graphqlResponse.data.orders.compactMap { graphQLOrder in
+            // Handle missing or invalid status field by defaulting to .new
+            let status = graphQLOrder.status.flatMap { OrderStatus(rawValue: $0) } ?? .new
+            
+            return Order(
+                id: graphQLOrder.id,
+                description: graphQLOrder.description,
+                price: graphQLOrder.price,
+                customerID: graphQLOrder.customerID,
+                imageURL: graphQLOrder.imageURL,
+                status: status
+            )
+        }
+        
+        print("GraphQL: Successfully parsed \(orders.count) orders")
         return orders
     }
 
     public func fetchCustomers() async throws -> [Customer] {
         print("Using GraphQL OrderService - fetching customers")
 
-        // Simulate GraphQL query processing time
-        try await Task.sleep(for: .milliseconds(150))
-
-        let mockGraphQLResponse = """
+        let query = """
         {
-          "data": {
-            "customers": [
-              {
-                "id": "143",
-                "name": "Elena (GraphQL)",
-                "latitude": 46.771677,
-                "longitude": 23.601018
-              },
-              {
-                "id": "223",
-                "name": "Stefan (GraphQL)",
-                "latitude": 46.757919,
-                "longitude": 23.546688
-              },
-              {
-                "id": "601",
-                "name": "Diana (GraphQL)",
-                "latitude": 46.562789,
-                "longitude": 23.784734
-              },
-              {
-                "id": "789",
-                "name": "Radu (GraphQL)",
-                "latitude": 46.790540,
-                "longitude": 23.570220
-              },
-              {
-                "id": "456",
-                "name": "Ioana (GraphQL)",
-                "latitude": 46.742680,
-                "longitude": 23.635890
-              }
-            ]
+          customers {
+            id
+            name
+            latitude
+            longitude
           }
         }
         """
 
-        let customers = try parseCustomersFromGraphQLResponse(mockGraphQLResponse)
-        print("GraphQL: Successfully fetched \(customers.count) customers")
-        return customers
-    }
-
-    // MARK: - Private Helpers
-
-    private func parseOrdersFromGraphQLResponse(_ jsonString: String) throws -> [Order] {
-        guard let data = jsonString.data(using: .utf8) else {
-            throw NetworkError.decodingError(NSError(domain: "ParseError", code: 0))
-        }
-
-        let response = try JSONDecoder().decode(GraphQLOrdersResponse.self, from: data)
-
-        return response.data.orders.map { graphQLOrder in
-            Order(
-                id: Int(graphQLOrder.id) ?? 0,
-                description: graphQLOrder.description,
-                price: graphQLOrder.price,
-                customerID: Int(graphQLOrder.customerID) ?? 0,
-                imageURL: graphQLOrder.imageURL,
-                status: OrderStatus(rawValue: graphQLOrder.status.lowercased()) ?? .pending
-            )
-        }
-    }
-
-    private func parseCustomersFromGraphQLResponse(_ jsonString: String) throws -> [Customer] {
-        guard let data = jsonString.data(using: .utf8) else {
-            throw NetworkError.decodingError(NSError(domain: "ParseError", code: 0))
-        }
-
-        let response = try JSONDecoder().decode(GraphQLCustomersResponse.self, from: data)
-
-        return response.data.customers.map { graphQLCustomer in
+        let response = try await executeGraphQLQuery(query: query)
+        print("GraphQL Customers Response: \(String(data: response, encoding: .utf8) ?? "Unable to decode")")
+        
+        let graphqlResponse = try JSONDecoder().decode(GraphQLCustomersResponse.self, from: response)
+        let customers = graphqlResponse.data.customers.map { graphQLCustomer in
             Customer(
-                id: Int(graphQLCustomer.id) ?? 0,
+                id: graphQLCustomer.id,
                 name: graphQLCustomer.name,
                 latitude: graphQLCustomer.latitude,
                 longitude: graphQLCustomer.longitude
             )
         }
+        
+        print("GraphQL: Successfully fetched \(customers.count) customers")
+        return customers
+    }
+
+    private func executeGraphQLQuery(query: String) async throws -> Data {
+        guard let url = URL(string: baseURL) else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body = ["query": query]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        print("GraphQL HTTP Status: \(httpResponse.statusCode)")
+
+        guard httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        return data
     }
 }
