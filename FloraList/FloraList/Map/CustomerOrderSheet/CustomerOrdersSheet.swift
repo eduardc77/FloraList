@@ -10,8 +10,8 @@ import Networking
 
 struct CustomerOrdersSheet: View {
     @Environment(OrderManager.self) private var orderManager
-    @Environment(LocationManager.self) private var locationManager
     @Environment(DeepLinkManager.self) private var deepLinkManager
+    @Environment(RouteManager.self) private var routeManager
     @Environment(\.selectedTab) private var selectedTab
     @Environment(\.dismiss) private var dismiss
     let customer: Customer
@@ -22,10 +22,10 @@ struct CustomerOrdersSheet: View {
                 viewModel: CustomerOrdersSheetViewModel(
                     customer: customer,
                     orderManager: orderManager,
-                    locationManager: locationManager,
                     deepLinkManager: deepLinkManager,
                     selectedTab: selectedTab,
-                    dismiss: { dismiss() }
+                    dismiss: { dismiss() },
+                    routeManager: routeManager
                 )
             )
             .navigationTitle("Customer Details")
@@ -39,6 +39,7 @@ struct CustomerOrdersSheet: View {
 private struct CustomerOrdersSheetContentView: View {
     @State private var viewModel: CustomerOrdersSheetViewModel
     @Environment(LocationManager.self) private var locationManager
+
 
     init(viewModel: CustomerOrdersSheetViewModel) {
         self._viewModel = State(initialValue: viewModel)
@@ -70,10 +71,15 @@ private struct CustomerOrdersSheetContentView: View {
                             .foregroundStyle(.secondary)
                     }
                     
-                    DistanceInfoLabel(customer: viewModel.customer, locationManager: locationManager)
+                    RouteInfoLabel(
+                        customer: viewModel.customer, 
+                        locationManager: locationManager,
+                        routeTime: viewModel.isRouteShown ? viewModel.currentRouteTime : nil
+                    )
                 }
                 .padding(.vertical, 4)
             }
+
 
             Section("Orders (\(viewModel.ordersCount))") {
                 if !viewModel.hasOrders {
@@ -97,6 +103,20 @@ private struct CustomerOrdersSheetContentView: View {
         .listSectionSpacing(16)
         .contentMargins(.top, 16, for: .scrollContent)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    Task {
+                        if viewModel.isRouteShown {
+                            viewModel.clearRoute()
+                        } else {
+                            await viewModel.showRoute()
+                        }
+                    }
+                                    } label: {
+                        Image(systemName: viewModel.isRouteShown ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
+                    }
+            }
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") {
                     viewModel.dismissSheet()

@@ -11,6 +11,8 @@ import Networking
 
 final class CustomerAnnotation: NSObject, MKAnnotation {
     let customer: Customer
+    var routeTimeText: String?
+    var distanceText: String?
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: customer.latitude, longitude: customer.longitude)
@@ -21,7 +23,21 @@ final class CustomerAnnotation: NSObject, MKAnnotation {
     }
 
     var subtitle: String? {
-        "Customer ID: \(customer.id)"
+        var components: [String] = []
+        
+        if let distanceText = distanceText {
+            components.append("\(distanceText)")
+        }
+        
+        if let routeTimeText = routeTimeText {
+            components.append(routeTimeText)
+        }
+        
+        if !components.isEmpty {
+            return components.joined(separator: " • ")
+        } else {
+            return "Customer ID: \(customer.id)"
+        }
     }
 
     init(customer: Customer) {

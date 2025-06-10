@@ -54,7 +54,7 @@ private struct OrderDetailContentView: View {
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Subviews
 
     private var orderImage: some View {
         AsyncImage(url: URL(string: viewModel.order.imageURL)) { image in
@@ -119,7 +119,7 @@ private struct OrderDetailContentView: View {
                     LocationInfoLabel(customer: customer)
 
                     // Distance information
-                    DistanceInfoLabel(customer: customer, locationManager: locationManager)
+                    RouteInfoLabel(customer: customer, locationManager: locationManager)
                 }
                 .font(.subheadline)
                 

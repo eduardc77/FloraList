@@ -12,10 +12,7 @@ import Networking
 @Observable
 final class CustomerMapViewModel {
     private let orderManager: OrderManager
-    private let locationManager: LocationManager
-
-    var showRoutes = true
-    var routes: [MKRoute] = []
+    private let routeManager: RouteManager
 
     var customers: [Customer] {
         orderManager.customers
@@ -29,46 +26,22 @@ final class CustomerMapViewModel {
         orderManager.error
     }
 
-    init(orderManager: OrderManager, locationManager: LocationManager) {
+    init(orderManager: OrderManager, routeManager: RouteManager) {
         self.orderManager = orderManager
-        self.locationManager = locationManager
+        self.routeManager = routeManager
     }
 
     // MARK: - Route Management
-
-    @MainActor
-    func showOrderRoutes() async {
-        routes.removeAll()
-
-        var calculatedRoutes: [MKRoute] = []
-
-        for customer in customers {
-            do {
-                if let route = try await locationManager.calculateRoute(to: customer) {
-                    calculatedRoutes.append(route)
-                }
-            } catch {
-                print("Failed to calculate route to \(customer.name): \(error)")
-            }
-        }
-
-        routes = calculatedRoutes
-        showRoutes = true
+    
+    var currentRoute: MKRoute? {
+        routeManager.currentRoute
     }
-
-    func hideRoutes() {
-        showRoutes = false
-        // Properly clear routes to prevent MapKit leaks
-        routes.removeAll()
+    
+    var routeDestinationCustomer: Customer? {
+        routeManager.routeDestinationCustomer
     }
+    
 
-    func toggleRoutes() async {
-        if showRoutes {
-            hideRoutes()
-        } else {
-            await showOrderRoutes()
-        }
-    }
 
     @MainActor
     func retryDataFetch() async {

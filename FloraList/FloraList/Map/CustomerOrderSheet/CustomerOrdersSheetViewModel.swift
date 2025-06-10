@@ -12,10 +12,10 @@ import Networking
 @Observable
 class CustomerOrdersSheetViewModel {
     private let orderManager: OrderManager
-    private let locationManager: LocationManager
     private let deepLinkManager: DeepLinkManager
     private let selectedTab: Binding<AppTab>
     private let dismiss: () -> Void
+    private let routeManager: RouteManager
 
     let customer: Customer
 
@@ -34,17 +34,17 @@ class CustomerOrdersSheetViewModel {
     init(
         customer: Customer,
         orderManager: OrderManager,
-        locationManager: LocationManager,
         deepLinkManager: DeepLinkManager,
         selectedTab: Binding<AppTab>,
-        dismiss: @escaping () -> Void
+        dismiss: @escaping () -> Void,
+        routeManager: RouteManager
     ) {
         self.customer = customer
         self.orderManager = orderManager
-        self.locationManager = locationManager
         self.deepLinkManager = deepLinkManager
         self.selectedTab = selectedTab
         self.dismiss = dismiss
+        self.routeManager = routeManager
     }
 
     func dismissSheet() {
@@ -67,5 +67,27 @@ class CustomerOrdersSheetViewModel {
         } catch {
             print("Failed to navigate to order \(order.id): \(error)")
         }
+    }
+
+    // MARK: - Route Management
+
+    var isRouteShown: Bool {
+        routeManager.isRouteShown(for: customer)
+    }
+    
+    var currentRouteTime: String? {
+        // Only show route time when route is actively displayed
+        guard isRouteShown, let route = routeManager.currentRoute else { return nil }
+        return RouteManager.formatTime(route.expectedTravelTime)
+    }
+    
+
+
+    func showRoute() async {
+        await routeManager.showRoute(to: customer)
+    }
+
+    func clearRoute() {
+        routeManager.clearRoute()
     }
 }
