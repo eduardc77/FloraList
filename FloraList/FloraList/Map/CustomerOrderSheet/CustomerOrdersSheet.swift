@@ -40,7 +40,6 @@ private struct CustomerOrdersSheetContentView: View {
     @State private var viewModel: CustomerOrdersSheetViewModel
     @Environment(LocationManager.self) private var locationManager
 
-
     init(viewModel: CustomerOrdersSheetViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }
@@ -70,16 +69,15 @@ private struct CustomerOrdersSheetContentView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    
+
                     RouteInfoLabel(
-                        customer: viewModel.customer, 
+                        customer: viewModel.customer,
                         locationManager: locationManager,
                         routeTime: viewModel.isRouteShown ? viewModel.currentRouteTime : nil
                     )
                 }
                 .padding(.vertical, 4)
             }
-
 
             Section("Orders (\(viewModel.ordersCount))") {
                 if !viewModel.hasOrders {
@@ -112,9 +110,11 @@ private struct CustomerOrdersSheetContentView: View {
                             await viewModel.showRoute()
                         }
                     }
-                                    } label: {
-                        Image(systemName: viewModel.isRouteShown ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
-                    }
+                } label: {
+                    Image(systemName: viewModel.isRouteShown
+                          ? "point.topleft.down.curvedto.point.bottomright.up.fill"
+                          : "point.topleft.down.curvedto.point.bottomright.up")
+                }
             }
             
             ToolbarItem(placement: .topBarTrailing) {

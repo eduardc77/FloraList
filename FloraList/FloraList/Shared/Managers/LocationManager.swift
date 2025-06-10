@@ -75,9 +75,7 @@ final class LocationManager: NSObject {
 
         return LocationManager.distanceFormatter.string(fromDistance: distance)
     }
-    
 
-    
     // MARK: - Route Calculations
     
     func calculateRoute(to customer: Customer) async throws -> MKRoute? {

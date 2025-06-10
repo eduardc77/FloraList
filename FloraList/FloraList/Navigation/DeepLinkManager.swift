@@ -41,7 +41,12 @@ class DeepLinkManager {
         }
     }
 
-    func setup(with manager: OrderManager, coordinator: OrdersCoordinator, mapCoordinator: CustomerMapCoordinator, selectedTab: Binding<AppTab>? = nil) {
+    func setup(
+        with manager: OrderManager,
+        coordinator: OrdersCoordinator,
+        mapCoordinator: CustomerMapCoordinator,
+        selectedTab: Binding<AppTab>? = nil
+    ) {
         self.orderManager = manager
         self.coordinator = coordinator
         self.mapCoordinator = mapCoordinator

@@ -45,4 +45,3 @@ final class CustomerAnnotation: NSObject, MKAnnotation {
         super.init()
     }
 }
-

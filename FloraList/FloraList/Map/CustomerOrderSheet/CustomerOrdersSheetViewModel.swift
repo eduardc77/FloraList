@@ -81,8 +81,6 @@ class CustomerOrdersSheetViewModel {
         return RouteManager.formatTime(route.expectedTravelTime)
     }
     
-
-
     func showRoute() async {
         await routeManager.showRoute(to: customer)
     }

@@ -103,7 +103,6 @@ private struct OrderDetailContentView: View {
         .pickerStyle(.menu)
     }
 
-
     private var customerInfoSection: some View {
         Section {
             HStack {
