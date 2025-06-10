@@ -32,8 +32,6 @@ public class GraphQLOrderService {
         """
 
         let response = try await executeGraphQLQuery(query: query)
-        print("GraphQL Orders Response: \(String(data: response, encoding: .utf8) ?? "Unable to decode")")
-        
         let graphqlResponse = try JSONDecoder().decode(GraphQLOrdersResponse.self, from: response)
         let orders: [Order] = graphqlResponse.data.orders.compactMap { graphQLOrder in
             // Handle missing or invalid status field by defaulting to .new
@@ -68,8 +66,6 @@ public class GraphQLOrderService {
         """
 
         let response = try await executeGraphQLQuery(query: query)
-        print("GraphQL Customers Response: \(String(data: response, encoding: .utf8) ?? "Unable to decode")")
-        
         let graphqlResponse = try JSONDecoder().decode(GraphQLCustomersResponse.self, from: response)
         let customers = graphqlResponse.data.customers.map { graphQLCustomer in
             Customer(

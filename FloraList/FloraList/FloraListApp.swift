@@ -22,13 +22,13 @@ struct FloraListApp: App {
     @State private var deepLinkErrorMessage: String?
 
     init() {
-        FirebaseApp.configure()
         let notificationManager = NotificationManager()
         let locationManager = LocationManager()
         self._notificationManager = State(initialValue: notificationManager)
         self._locationManager = State(initialValue: locationManager)
         self._orderManager = State(initialValue: OrderManager(notificationManager: notificationManager))
         self._routeManager = State(initialValue: RouteManager(locationManager: locationManager))
+        configureFirebase()
     }
 
     var body: some Scene {
@@ -69,5 +69,14 @@ struct FloraListApp: App {
                     }
                 }
         }
+    }
+
+    private func configureFirebase() {
+        FirebaseApp.configure()
+
+        // Set Firebase log level to warning or error only
+        #if !DEBUG
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
+        #endif
     }
 }

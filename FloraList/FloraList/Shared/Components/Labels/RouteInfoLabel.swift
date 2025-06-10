@@ -11,7 +11,7 @@ import Networking
 struct RouteInfoLabel: View {
     let customer: Customer
     let locationManager: LocationManager
-    var routeTime: String? = nil
+    var routeTime: String?
     var iconColor: Color = .orange
     var font: Font = .caption
 

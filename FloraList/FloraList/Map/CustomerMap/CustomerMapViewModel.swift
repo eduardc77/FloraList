@@ -41,8 +41,6 @@ final class CustomerMapViewModel {
         routeManager.routeDestinationCustomer
     }
     
-
-
     @MainActor
     func retryDataFetch() async {
         await orderManager.fetchData()

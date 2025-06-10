@@ -109,4 +109,3 @@ class SettingsViewModel {
         await notificationManager.checkCurrentPermissionStatus()
     }
 }
-
