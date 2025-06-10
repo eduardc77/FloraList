@@ -15,6 +15,8 @@ struct MapView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D?
     @Binding var showRoutes: Bool
     let routes: [MKRoute]
+    let routeManager: RouteManager
+    let locationManager: LocationManager
     @Binding var shouldCenterOnUser: Bool
     @Binding var isCenteredOnUser: Bool
 
@@ -42,22 +44,77 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        // Remove existing annotations (except user location)
-        uiView.removeAnnotations(uiView.annotations.filter { !($0 is MKUserLocation) })
+        context.coordinator.parent = self
         
-        // Remove existing overlays
-        uiView.removeOverlays(uiView.overlays)
-
-        // Add customer annotations
-        let annotations = customers.map { customer in
-            CustomerAnnotation(customer: customer)
+        // Only update annotations if customers have changed
+        let currentAnnotations = uiView.annotations.compactMap { $0 as? CustomerAnnotation }
+        let currentCustomerIDs = Set(currentAnnotations.map { $0.customer.id })
+        let newCustomerIDs = Set(customers.map { $0.id })
+        
+        if currentCustomerIDs != newCustomerIDs {
+            // Remove annotations for customers that are no longer in the list
+            let annotationsToRemove = currentAnnotations.filter { annotation in
+                !newCustomerIDs.contains(annotation.customer.id)
+            }
+            if !annotationsToRemove.isEmpty {
+                uiView.removeAnnotations(annotationsToRemove)
+            }
+            
+            // Add annotations for new customers
+            let newCustomers = customers.filter { customer in
+                !currentCustomerIDs.contains(customer.id)
+            }
+            if !newCustomers.isEmpty {
+                let newAnnotations = newCustomers.map { CustomerAnnotation(customer: $0) }
+                uiView.addAnnotations(newAnnotations)
+            }
         }
-        uiView.addAnnotations(annotations)
         
-        // Add route overlays if enabled
-        if showRoutes {
-            let polylines = routes.map { $0.polyline }
-            uiView.addOverlays(polylines)
+        // Update annotations based on route state changes
+        for annotation in currentAnnotations {
+            // Update route time for active routes only
+            if routeManager.isRouteShown(for: annotation.customer) {
+                if annotation.routeTimeText == nil,
+                   let route = routeManager.currentRoute {
+                    annotation.routeTimeText = RouteManager.formatTime(route.expectedTravelTime)
+                    
+                    // Update the annotation view to trigger smooth callout refresh
+                    if let annotationView = uiView.view(for: annotation) {
+                        annotationView.annotation = annotation
+                    }
+                }
+            } else {
+                // Clear route time if no active route line
+                if annotation.routeTimeText != nil {
+                    annotation.routeTimeText = nil
+                    
+                    // Update the annotation view to trigger smooth callout refresh
+                    if let annotationView = uiView.view(for: annotation) {
+                        annotationView.annotation = annotation
+                    }
+                }
+            }
+        }
+        
+        // Update overlays when routes change
+        let currentOverlayCount = uiView.overlays.count
+        let newRouteCount = showRoutes ? routes.count : 0
+        
+        // Check if we need to update overlays (different count or routes changed)
+        let needsOverlayUpdate = currentOverlayCount != newRouteCount || 
+                                (showRoutes && !routes.isEmpty && currentOverlayCount > 0)
+        
+        if needsOverlayUpdate {
+            // Always remove existing overlays first
+            if !uiView.overlays.isEmpty {
+                uiView.removeOverlays(uiView.overlays)
+            }
+            
+            // Add new routes if we should show them
+            if showRoutes && !routes.isEmpty {
+                let polylines = routes.map { $0.polyline }
+                uiView.addOverlays(polylines)
+            }
         }
         
         // Handle centering on user location
@@ -71,12 +128,14 @@ struct MapView: UIViewRepresentable {
             uiView.setRegion(newRegion, animated: true)
             
             // Reset the trigger and mark as centered
-            shouldCenterOnUser = false
-            isCenteredOnUser = true
+            DispatchQueue.main.async {
+                self.shouldCenterOnUser = false
+                self.isCenteredOnUser = true
+            }
         }
 
         // Auto center on customers if no user location available
-        if !customers.isEmpty && userLocation == nil {
+        if !customers.isEmpty && userLocation == nil && currentAnnotations.isEmpty {
             let coordinates = customers.map {
                 CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
             }
@@ -143,7 +202,9 @@ extension MapView {
             annotationView.markerTintColor = .systemBlue
             annotationView.glyphText = "🌸"
 
-            // Add detail disclosure button
+            if parent.locationManager.isLocationAvailable {
+                customerAnnotation.distanceText = parent.locationManager.formattedDistance(to: customerAnnotation.customer)
+            }
             let detailButton = UIButton(type: .detailDisclosure)
             annotationView.rightCalloutAccessoryView = detailButton
 
@@ -163,7 +224,9 @@ extension MapView {
         func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
             // When user starts manually moving the map, we're no longer centered on user
             if parent.isCenteredOnUser {
-                parent.isCenteredOnUser = false
+                DispatchQueue.main.async {
+                    self.parent.isCenteredOnUser = false
+                }
             }
         }
         

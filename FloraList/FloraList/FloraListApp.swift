@@ -16,6 +16,7 @@ struct FloraListApp: App {
     @State private var mapCoordinator = CustomerMapCoordinator()
     @State private var deepLinkManager = DeepLinkManager()
     @State private var locationManager = LocationManager()
+    @State private var routeManager: RouteManager
     @State private var analyticsManager = AnalyticsManager.shared
 
     @State private var deepLinkErrorMessage: String?
@@ -23,8 +24,11 @@ struct FloraListApp: App {
     init() {
         FirebaseApp.configure()
         let notificationManager = NotificationManager()
+        let locationManager = LocationManager()
         self._notificationManager = State(initialValue: notificationManager)
+        self._locationManager = State(initialValue: locationManager)
         self._orderManager = State(initialValue: OrderManager(notificationManager: notificationManager))
+        self._routeManager = State(initialValue: RouteManager(locationManager: locationManager))
     }
 
     var body: some Scene {
@@ -35,6 +39,7 @@ struct FloraListApp: App {
                 .environment(mapCoordinator)
                 .environment(notificationManager)
                 .environment(locationManager)
+                .environment(routeManager)
                 .environment(deepLinkManager)
                 .environment(analyticsManager)
                 .task {

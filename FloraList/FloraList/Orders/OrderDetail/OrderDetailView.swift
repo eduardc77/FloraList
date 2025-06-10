@@ -54,7 +54,7 @@ private struct OrderDetailContentView: View {
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Subviews
 
     private var orderImage: some View {
         AsyncImage(url: URL(string: viewModel.order.imageURL)) { image in

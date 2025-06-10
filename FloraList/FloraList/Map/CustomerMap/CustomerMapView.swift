@@ -11,7 +11,7 @@ import Networking
 
 struct CustomerMapView: View {
     @Environment(OrderManager.self) private var orderManager
-    @Environment(LocationManager.self) private var locationManager
+    @Environment(RouteManager.self) private var routeManager
     @Environment(CustomerMapCoordinator.self) private var coordinator
     @Environment(AnalyticsManager.self) private var analytics
     
@@ -20,7 +20,7 @@ struct CustomerMapView: View {
             CustomerMapContentView(
                 viewModel: CustomerMapViewModel(
                     orderManager: orderManager,
-                    locationManager: locationManager
+                    routeManager: routeManager
                 )
             )
             .navigationTitle("Customer Locations")
@@ -41,9 +41,8 @@ struct CustomerMapView: View {
 private struct CustomerMapContentView: View {
     @State private var viewModel: CustomerMapViewModel
     @Environment(CustomerMapCoordinator.self) private var coordinator
-    @Environment(AnalyticsManager.self) private var analytics
     @Environment(LocationManager.self) private var locationManager
-    @State private var showingCustomerOrders = false
+    @Environment(RouteManager.self) private var routeManager
     @State private var shouldCenterOnUser = false
     @State private var isCenteredOnUser = false
     
@@ -62,16 +61,7 @@ private struct CustomerMapContentView: View {
             }
         }
         .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                // Routes toggle button
-                Button {
-                    Task {
-                        await viewModel.toggleRoutes()
-                    }
-                } label: {
-                    Image(systemName: viewModel.showRoutes ? "point.topleft.down.curvedto.point.bottomright.up.fill" : "point.topleft.down.curvedto.point.bottomright.up")
-                }
-                
+            ToolbarItem(placement: .topBarTrailing) {
                 // Center on user location button
                 if locationManager.isLocationAvailable {
                     Button {
@@ -94,22 +84,13 @@ private struct CustomerMapContentView: View {
                 set: { coordinator.selectedCustomer = $0 }
             ),
             userLocation: locationManager.currentLocation?.coordinate,
-            showRoutes: .constant(viewModel.showRoutes),
-            routes: viewModel.routes,
+            showRoutes: .constant(viewModel.currentRoute != nil),
+            routes: viewModel.currentRoute.map { [$0] } ?? [],
+            routeManager: routeManager,
+            locationManager: locationManager,
             shouldCenterOnUser: $shouldCenterOnUser,
             isCenteredOnUser: $isCenteredOnUser
         )
-        .task {
-            // Calculate routes on initial load since showRoutes is true by default
-            if viewModel.showRoutes && viewModel.routes.isEmpty {
-                await viewModel.showOrderRoutes()
-            }
-        }
-        .onChange(of: coordinator.selectedCustomer) { _, customer in
-            if customer != nil {
-                showingCustomerOrders = true
-            }
-        }
     }
 
     private var loadingView: some View {
