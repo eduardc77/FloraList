@@ -14,6 +14,12 @@ import MapKit
 final class LocationManager: NSObject {
     private let locationManager = CLLocationManager()
 
+    private static let distanceFormatter: MKDistanceFormatter = {
+        let formatter = MKDistanceFormatter()
+        formatter.units = .metric
+        return formatter
+    }()
+
     private(set) var currentLocation: CLLocation?
     private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
     private(set) var isLocationAvailable: Bool = false
@@ -67,10 +73,10 @@ final class LocationManager: NSObject {
             return "Distance unavailable"
         }
 
-        let formatter = MKDistanceFormatter()
-        formatter.units = .metric
-        return formatter.string(fromDistance: distance)
+        return LocationManager.distanceFormatter.string(fromDistance: distance)
     }
+    
+
     
     // MARK: - Route Calculations
     
@@ -86,9 +92,17 @@ final class LocationManager: NSObject {
         request.transportType = .automobile
         
         let directions = MKDirections(request: request)
-        let response = try await directions.calculate()
         
-        return response.routes.first
+        do {
+            let response = try await directions.calculate()
+            let route = response.routes.first
+            directions.cancel()
+            
+            return route
+        } catch {
+            directions.cancel()
+            throw error
+        }
     }
 }
 
