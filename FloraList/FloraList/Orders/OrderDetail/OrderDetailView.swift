@@ -119,7 +119,7 @@ private struct OrderDetailContentView: View {
                     LocationInfoLabel(customer: customer)
 
                     // Distance information
-                    DistanceInfoLabel(customer: customer, locationManager: locationManager)
+                    RouteInfoLabel(customer: customer, locationManager: locationManager)
                 }
                 .font(.subheadline)
                 

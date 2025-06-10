@@ -46,102 +46,12 @@ struct MapView: UIViewRepresentable {
     func updateUIView(_ uiView: MKMapView, context: Context) {
         context.coordinator.parent = self
         
-        // Only update annotations if customers have changed
         let currentAnnotations = uiView.annotations.compactMap { $0 as? CustomerAnnotation }
-        let currentCustomerIDs = Set(currentAnnotations.map { $0.customer.id })
-        let newCustomerIDs = Set(customers.map { $0.id })
         
-        if currentCustomerIDs != newCustomerIDs {
-            // Remove annotations for customers that are no longer in the list
-            let annotationsToRemove = currentAnnotations.filter { annotation in
-                !newCustomerIDs.contains(annotation.customer.id)
-            }
-            if !annotationsToRemove.isEmpty {
-                uiView.removeAnnotations(annotationsToRemove)
-            }
-            
-            // Add annotations for new customers
-            let newCustomers = customers.filter { customer in
-                !currentCustomerIDs.contains(customer.id)
-            }
-            if !newCustomers.isEmpty {
-                let newAnnotations = newCustomers.map { CustomerAnnotation(customer: $0) }
-                uiView.addAnnotations(newAnnotations)
-            }
-        }
-        
-        // Update annotations based on route state changes
-        for annotation in currentAnnotations {
-            // Update route time for active routes only
-            if routeManager.isRouteShown(for: annotation.customer) {
-                if annotation.routeTimeText == nil,
-                   let route = routeManager.currentRoute {
-                    annotation.routeTimeText = RouteManager.formatTime(route.expectedTravelTime)
-                    
-                    // Update the annotation view to trigger smooth callout refresh
-                    if let annotationView = uiView.view(for: annotation) {
-                        annotationView.annotation = annotation
-                    }
-                }
-            } else {
-                // Clear route time if no active route line
-                if annotation.routeTimeText != nil {
-                    annotation.routeTimeText = nil
-                    
-                    // Update the annotation view to trigger smooth callout refresh
-                    if let annotationView = uiView.view(for: annotation) {
-                        annotationView.annotation = annotation
-                    }
-                }
-            }
-        }
-        
-        // Update overlays when routes change
-        let currentOverlayCount = uiView.overlays.count
-        let newRouteCount = showRoutes ? routes.count : 0
-        
-        // Check if we need to update overlays (different count or routes changed)
-        let needsOverlayUpdate = currentOverlayCount != newRouteCount || 
-                                (showRoutes && !routes.isEmpty && currentOverlayCount > 0)
-        
-        if needsOverlayUpdate {
-            // Always remove existing overlays first
-            if !uiView.overlays.isEmpty {
-                uiView.removeOverlays(uiView.overlays)
-            }
-            
-            // Add new routes if we should show them
-            if showRoutes && !routes.isEmpty {
-                let polylines = routes.map { $0.polyline }
-                uiView.addOverlays(polylines)
-            }
-        }
-        
-        // Handle centering on user location
-        if shouldCenterOnUser, let userLocation = userLocation {
-            // Preserve current zoom level by keeping the same span
-            let currentRegion = uiView.region
-            let newRegion = MKCoordinateRegion(
-                center: userLocation,
-                span: currentRegion.span
-            )
-            uiView.setRegion(newRegion, animated: true)
-            
-            // Reset the trigger and mark as centered
-            DispatchQueue.main.async {
-                self.shouldCenterOnUser = false
-                self.isCenteredOnUser = true
-            }
-        }
-
-        // Auto center on customers if no user location available
-        if !customers.isEmpty && userLocation == nil && currentAnnotations.isEmpty {
-            let coordinates = customers.map {
-                CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
-            }
-            let region = coordinateRegion(for: coordinates)
-            uiView.setRegion(region, animated: true)
-        }
+        updateAnnotations(on: uiView, currentAnnotations: currentAnnotations)
+        updateRouteTimesOnAnnotations(currentAnnotations, on: uiView)
+        updateOverlays(on: uiView)
+        handleLocationCentering(on: uiView, currentAnnotations: currentAnnotations)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -149,6 +59,101 @@ struct MapView: UIViewRepresentable {
     }
 
     // MARK: - Helper Methods
+
+    private func updateAnnotations(on mapView: MKMapView, currentAnnotations: [CustomerAnnotation]) {
+        let currentCustomerIDs = Set(currentAnnotations.map { $0.customer.id })
+        let newCustomerIDs = Set(customers.map { $0.id })
+        
+        guard currentCustomerIDs != newCustomerIDs else { return }
+        routeManager.clearRouteIfDestinationNotFound(in: customers)
+
+        // Remove annotations for customers no longer in the list
+        let annotationsToRemove = currentAnnotations.filter { annotation in
+            !newCustomerIDs.contains(annotation.customer.id)
+        }
+        if !annotationsToRemove.isEmpty {
+            mapView.removeAnnotations(annotationsToRemove)
+        }
+        
+        // Add annotations for new customers
+        let newCustomers = customers.filter { customer in
+            !currentCustomerIDs.contains(customer.id)
+        }
+        if !newCustomers.isEmpty {
+            let newAnnotations = newCustomers.map { CustomerAnnotation(customer: $0) }
+            mapView.addAnnotations(newAnnotations)
+        }
+    }
+    
+    private func updateRouteTimesOnAnnotations(_ annotations: [CustomerAnnotation], on mapView: MKMapView) {
+        for annotation in annotations {
+            var needsRefresh = false
+            
+            if routeManager.isRouteShown(for: annotation.customer) {
+                if annotation.routeTimeText == nil,
+                   let route = routeManager.currentRoute {
+                    annotation.routeTimeText = RouteManager.formatTime(route.expectedTravelTime)
+                    needsRefresh = true
+                }
+            } else {
+                if annotation.routeTimeText != nil {
+                    annotation.routeTimeText = nil
+                    needsRefresh = true
+                }
+            }
+            
+            if needsRefresh, let annotationView = mapView.view(for: annotation) {
+                annotationView.annotation = annotation
+            }
+        }
+    }
+    
+    private func updateOverlays(on mapView: MKMapView) {
+        let currentOverlayCount = mapView.overlays.count
+        let newRouteCount = showRoutes ? routes.count : 0
+        
+        let needsOverlayUpdate = currentOverlayCount != newRouteCount || 
+                                (showRoutes && !routes.isEmpty && currentOverlayCount > 0)
+        
+        guard needsOverlayUpdate else { return }
+        
+        // Remove existing overlays first
+        if !mapView.overlays.isEmpty {
+            mapView.removeOverlays(mapView.overlays)
+        }
+        
+        // Add new routes if needed
+        if showRoutes && !routes.isEmpty {
+            let polylines = routes.map { $0.polyline }
+            mapView.addOverlays(polylines)
+        }
+    }
+    
+    private func handleLocationCentering(on mapView: MKMapView, currentAnnotations: [CustomerAnnotation]) {
+        // Handle user location centering
+        if shouldCenterOnUser, let userLocation = userLocation {
+            let currentRegion = mapView.region
+            let newRegion = MKCoordinateRegion(
+                center: userLocation,
+                span: currentRegion.span
+            )
+            mapView.setRegion(newRegion, animated: true)
+            
+            DispatchQueue.main.async {
+                self.shouldCenterOnUser = false
+                self.isCenteredOnUser = true
+            }
+        }
+        
+        // Auto center on customers if no user location available
+        if !customers.isEmpty && userLocation == nil && currentAnnotations.isEmpty {
+            let coordinates = customers.map {
+                CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+            }
+            let region = coordinateRegion(for: coordinates)
+            mapView.setRegion(region, animated: true)
+        }
+    }
 
     private func coordinateRegion(for coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion {
         guard !coordinates.isEmpty else {
@@ -243,3 +248,4 @@ extension MapView {
         }
     }
 }
+

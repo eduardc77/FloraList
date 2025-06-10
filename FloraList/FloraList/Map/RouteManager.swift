@@ -40,6 +40,17 @@ final class RouteManager {
     func isRouteShown(for customer: Customer) -> Bool {
         routeDestinationCustomer?.id == customer.id
     }
+    
+    func clearRouteIfDestinationNotFound(in customers: [Customer]) {
+        guard let routeDestination = routeDestinationCustomer else { return }
+        
+        // Check if the route destination customer still exists in the current customer list
+        let customerExists = customers.contains { $0.id == routeDestination.id }
+        
+        if !customerExists {
+            clearRoute()
+        }
+    }
 
     static func formatTime(_ timeInterval: TimeInterval) -> String {
         let minutes = Int(timeInterval / 60)

@@ -1,5 +1,5 @@
 //
-//  DistanceInfoLabel.swift
+//  RouteInfoLabel.swift
 //  FloraList
 //
 //  Created by User on 6/5/25.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Networking
 
-struct DistanceInfoLabel: View {
+struct RouteInfoLabel: View {
     let customer: Customer
     let locationManager: LocationManager
     var routeTime: String? = nil
@@ -51,7 +51,7 @@ struct DistanceInfoLabel: View {
 
 #Preview {
     VStack(alignment: .leading, spacing: 12) {
-        DistanceInfoLabel(
+        RouteInfoLabel(
             customer: Customer(id: 1, name: "John Doe", latitude: 46.562789, longitude: 23.784734),
             locationManager: LocationManager(),
             routeTime: "15 min"

@@ -71,7 +71,7 @@ private struct CustomerOrdersSheetContentView: View {
                             .foregroundStyle(.secondary)
                     }
                     
-                    DistanceInfoLabel(
+                    RouteInfoLabel(
                         customer: viewModel.customer, 
                         locationManager: locationManager,
                         routeTime: viewModel.isRouteShown ? viewModel.currentRouteTime : nil
