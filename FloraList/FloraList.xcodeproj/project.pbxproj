@@ -7,11 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE7CB2642DFB10DA0084AF33 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7CB2632DFB10DA0084AF33 /* WidgetKit.framework */; };
+		CE7CB2662DFB10DA0084AF33 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7CB2652DFB10DA0084AF33 /* SwiftUI.framework */; };
+		CE7CB2752DFB10DC0084AF33 /* FloraListWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CE7CB27E2DFB139E0084AF33 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CE7CB27D2DFB139E0084AF33 /* Networking */; };
 		CEBBFF1F2DF1C5DC00EDB7EA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */; };
 		CEE962F62DEF305B0002A40F /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CEE962F52DEF305B0002A40F /* Networking */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE7CB2732DFB10DC0084AF33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE876C712DEE43E4000B9E5C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE7CB2612DFB10DA0084AF33;
+			remoteInfo = FloraListWidgetExtension;
+		};
 		CE876C8B2DEE43E7000B9E5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE876C712DEE43E4000B9E5C /* Project object */;
@@ -28,7 +39,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CE7CB2762DFB10DC0084AF33 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CE7CB2752DFB10DC0084AF33 /* FloraListWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FloraListWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE7CB2632DFB10DA0084AF33 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		CE7CB2652DFB10DA0084AF33 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		CE876C792DEE43E4000B9E5C /* FloraList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloraList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C8A2DEE43E7000B9E5C /* FloraListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C942DEE43E7000B9E5C /* FloraListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,6 +64,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE7CB27A2DFB10DC0084AF33 /* Exceptions for "FloraListWidget" folder in "FloraListWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CE7CB2612DFB10DA0084AF33 /* FloraListWidgetExtension */;
+		};
 		CEE9631A2DEF38250002A40F /* Exceptions for "FloraList" folder in "FloraList" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -46,6 +81,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		CE7CB2672DFB10DA0084AF33 /* FloraListWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE7CB27A2DFB10DC0084AF33 /* Exceptions for "FloraListWidget" folder in "FloraListWidgetExtension" target */,
+			);
+			path = FloraListWidget;
+			sourceTree = "<group>";
+		};
 		CE876C7B2DEE43E4000B9E5C /* FloraList */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -67,6 +110,16 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CE7CB25F2DFB10DA0084AF33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE7CB27E2DFB139E0084AF33 /* Networking in Frameworks */,
+				CE7CB2662DFB10DA0084AF33 /* SwiftUI.framework in Frameworks */,
+				CE7CB2642DFB10DA0084AF33 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE876C762DEE43E4000B9E5C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -100,6 +153,7 @@
 				CE876C8D2DEE43E7000B9E5C /* FloraListTests */,
 				CE876C972DEE43E7000B9E5C /* FloraListUITests */,
 				CEE962F32DEF30340002A40F /* Networking */,
+				CE7CB2672DFB10DA0084AF33 /* FloraListWidget */,
 				CEE962F42DEF305B0002A40F /* Frameworks */,
 				CE876C7A2DEE43E4000B9E5C /* Products */,
 			);
@@ -111,6 +165,7 @@
 				CE876C792DEE43E4000B9E5C /* FloraList.app */,
 				CE876C8A2DEE43E7000B9E5C /* FloraListTests.xctest */,
 				CE876C942DEE43E7000B9E5C /* FloraListUITests.xctest */,
+				CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -118,6 +173,8 @@
 		CEE962F42DEF305B0002A40F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE7CB2632DFB10DA0084AF33 /* WidgetKit.framework */,
+				CE7CB2652DFB10DA0084AF33 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -125,6 +182,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		CE7CB2612DFB10DA0084AF33 /* FloraListWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE7CB2792DFB10DC0084AF33 /* Build configuration list for PBXNativeTarget "FloraListWidgetExtension" */;
+			buildPhases = (
+				CE7CB25E2DFB10DA0084AF33 /* Sources */,
+				CE7CB25F2DFB10DA0084AF33 /* Frameworks */,
+				CE7CB2602DFB10DA0084AF33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CE7CB2672DFB10DA0084AF33 /* FloraListWidget */,
+			);
+			name = FloraListWidgetExtension;
+			packageProductDependencies = (
+				CE7CB27D2DFB139E0084AF33 /* Networking */,
+			);
+			productName = FloraListWidgetExtension;
+			productReference = CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CE876C782DEE43E4000B9E5C /* FloraList */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CE876C9E2DEE43E7000B9E5C /* Build configuration list for PBXNativeTarget "FloraList" */;
@@ -133,10 +213,12 @@
 				CE876C762DEE43E4000B9E5C /* Frameworks */,
 				CE876C772DEE43E4000B9E5C /* Resources */,
 				CEE961A52DEF19CE0002A40F /* ShellScript */,
+				CE7CB2762DFB10DC0084AF33 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CE7CB2742DFB10DC0084AF33 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CE876C7B2DEE43E4000B9E5C /* FloraList */,
@@ -206,6 +288,9 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					CE7CB2612DFB10DA0084AF33 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					CE876C782DEE43E4000B9E5C = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -240,11 +325,19 @@
 				CE876C782DEE43E4000B9E5C /* FloraList */,
 				CE876C892DEE43E7000B9E5C /* FloraListTests */,
 				CE876C932DEE43E7000B9E5C /* FloraListUITests */,
+				CE7CB2612DFB10DA0084AF33 /* FloraListWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CE7CB2602DFB10DA0084AF33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE876C772DEE43E4000B9E5C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -292,6 +385,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CE7CB25E2DFB10DA0084AF33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE876C752DEE43E4000B9E5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -316,6 +416,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE7CB2742DFB10DC0084AF33 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE7CB2612DFB10DA0084AF33 /* FloraListWidgetExtension */;
+			targetProxy = CE7CB2732DFB10DC0084AF33 /* PBXContainerItemProxy */;
+		};
 		CE876C8C2DEE43E7000B9E5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CE876C782DEE43E4000B9E5C /* FloraList */;
@@ -329,6 +434,63 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		CE7CB2772DFB10DC0084AF33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FloraListWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FloraListWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.team.FloraList.FloraListWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CE7CB2782DFB10DC0084AF33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FloraListWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FloraListWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.team.FloraList.FloraListWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		CE876C9C2DEE43E7000B9E5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -613,6 +775,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CE7CB2792DFB10DC0084AF33 /* Build configuration list for PBXNativeTarget "FloraListWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE7CB2772DFB10DC0084AF33 /* Debug */,
+				CE7CB2782DFB10DC0084AF33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CE876C742DEE43E4000B9E5C /* Build configuration list for PBXProject "FloraList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -663,6 +834,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CE7CB27D2DFB139E0084AF33 /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+		};
 		CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEBBFF1D2DF1C5DC00EDB7EA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
