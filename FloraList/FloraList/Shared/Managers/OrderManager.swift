@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import Networking
+import FloraListNetwork
+import FloraListDomain
 
 @Observable
 class OrderManager {

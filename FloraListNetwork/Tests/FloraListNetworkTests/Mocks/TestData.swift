@@ -1,11 +1,11 @@
 //
 //  TestData.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/9/25.
 //
 
-@testable import Networking
+@testable import FloraListNetwork
 
 enum TestData {
 

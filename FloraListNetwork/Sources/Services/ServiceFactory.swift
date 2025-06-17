@@ -1,11 +1,13 @@
 //
 //  ServiceFactory.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //
 
-public enum NetworkingType {
+import FloraListDomain
+
+public enum NetworkingType: Hashable {
     case rest
     case graphQL
 }

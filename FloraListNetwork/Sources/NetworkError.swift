@@ -1,6 +1,6 @@
 //
 //  NetworkError.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/3/25.
 //

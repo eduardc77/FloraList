@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MapKit
-import Networking
+import FloraListDomain
 
 final class CustomerAnnotation: NSObject, MKAnnotation {
     let customer: Customer

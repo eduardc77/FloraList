@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListDomain
 
 @Observable
 final class OrdersCoordinator {

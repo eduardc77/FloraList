@@ -1,13 +1,13 @@
 //
 //  GraphQLOrderServiceTests.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //
 
 import Foundation
 import Testing
-@testable import Networking
+@testable import FloraListNetwork
 
 @Suite(.serialized)
 struct GraphQLOrderServiceTests {

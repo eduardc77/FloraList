@@ -1,13 +1,14 @@
 //
 //  GraphQLOrderService.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //
 
 import Foundation
+import FloraListDomain
 
-public class GraphQLOrderService {
+public class GraphQLOrderService: OrderServiceProtocol {
     private let session: URLSession
     private let baseURL = "https://ba8312ca-45f2-4ed3-86b6-047cf8926e92.mock.pstmn.io/graphql"
 

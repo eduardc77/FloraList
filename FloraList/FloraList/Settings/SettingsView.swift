@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListNetwork
 
 struct SettingsView: View {
     @Environment(LocationManager.self) private var locationManager

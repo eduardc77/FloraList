@@ -1,13 +1,14 @@
 //
 //  OrderService.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/3/25.
 //
 
 import Foundation
+import FloraListDomain
 
-public class OrderService {
+public class OrderService: OrderServiceProtocol {
     private let baseURL = "http://demo7677712.mockable.io"
     private let session: URLSession
 
@@ -37,10 +38,11 @@ public class OrderService {
 
         do {
             let orderDTOs = try Self.decoder.decode([OrderDTO].self, from: data)
-            let orders = orderDTOs.map(OrderMapper.map)
+            let orders = orderDTOs.map { $0.toDomain() }
             print("REST: Successfully fetched \(orders.count) orders")
             return orders
         } catch {
+            print("REST: Decoding error: \(error)")
             throw NetworkError.decodingError(error)
         }
     }
@@ -61,10 +63,11 @@ public class OrderService {
 
         do {
             let customerDTOs = try Self.decoder.decode([CustomerDTO].self, from: data)
-            let customers = customerDTOs.map(CustomerMapper.map)
+            let customers = customerDTOs.map { $0.toDomain() }
             print("REST: Successfully fetched \(customers.count) customers")
             return customers
         } catch {
+            print("REST: Decoding error: \(error)")
             throw NetworkError.decodingError(error)
         }
     }

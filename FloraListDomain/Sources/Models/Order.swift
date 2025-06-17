@@ -1,6 +1,6 @@
 //
 //  Order.swift
-//  Networking
+//  FloraListDomain
 //
 //  Created by User on 6/3/25.
 //
@@ -20,18 +20,5 @@ public struct Order: Codable, Identifiable, Sendable, Equatable, Hashable {
         self.customerID = customerID
         self.imageURL = imageURL
         self.status = status
-    }
-}
-
-struct OrderMapper {
-    static func map(dto: OrderDTO) -> Order {
-        Order(
-            id: dto.id,
-            description: dto.description,
-            price: dto.price,
-            customerID: dto.customerId,
-            imageURL: dto.imageUrl,
-            status: OrderStatus(rawValue: dto.status ?? "") ?? .new
-        )
     }
 }

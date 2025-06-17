@@ -7,7 +7,6 @@
 
 import Testing
 import SwiftUI
-import Networking
 @testable import FloraList
 
 @Suite("Customer Orders Sheet")
