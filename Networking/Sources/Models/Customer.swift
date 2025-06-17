@@ -18,3 +18,14 @@ public struct Customer: Codable, Identifiable, Sendable, Equatable {
         self.longitude = longitude
     }
 }
+
+struct CustomerMapper {
+    static func map(dto: CustomerDTO) -> Customer {
+        Customer(
+            id: dto.id,
+            name: dto.name,
+            latitude: dto.latitude,
+            longitude: dto.longitude
+        )
+    }
+}

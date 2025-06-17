@@ -11,6 +11,12 @@ public class OrderService {
     private let baseURL = "http://demo7677712.mockable.io"
     private let session: URLSession
 
+    private static let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
     public init(session: URLSession = .shared) {
         self.session = session
     }
@@ -30,7 +36,8 @@ public class OrderService {
         }
 
         do {
-            let orders = try JSONDecoder().decode([Order].self, from: data)
+            let orderDTOs = try Self.decoder.decode([OrderDTO].self, from: data)
+            let orders = orderDTOs.map(OrderMapper.map)
             print("REST: Successfully fetched \(orders.count) orders")
             return orders
         } catch {
@@ -53,7 +60,8 @@ public class OrderService {
         }
 
         do {
-            let customers = try JSONDecoder().decode([Customer].self, from: data)
+            let customerDTOs = try Self.decoder.decode([CustomerDTO].self, from: data)
+            let customers = customerDTOs.map(CustomerMapper.map)
             print("REST: Successfully fetched \(customers.count) customers")
             return customers
         } catch {

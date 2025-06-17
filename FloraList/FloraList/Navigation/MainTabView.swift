@@ -9,9 +9,6 @@ import SwiftUI
 
 struct MainTabView: View {
     @Binding var selectedTab: AppTab
-    @Environment(OrderManager.self) private var orderManager
-    @Environment(NotificationManager.self) private var notificationManager
-    @Environment(LocationManager.self) private var locationManager
 
     var body: some View {
         TabView(selection: $selectedTab) {

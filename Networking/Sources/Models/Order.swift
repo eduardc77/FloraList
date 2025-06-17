@@ -13,13 +13,6 @@ public struct Order: Codable, Identifiable, Sendable, Equatable, Hashable {
     public let imageURL: String
     public var status: OrderStatus
 
-    private enum CodingKeys: String, CodingKey {
-        case id, description, price
-        case customerID = "customer_id"
-        case imageURL = "image_url"
-        case status
-    }
-
     public init(id: Int, description: String, price: Double, customerID: Int, imageURL: String, status: OrderStatus) {
         self.id = id
         self.description = description
@@ -27,5 +20,18 @@ public struct Order: Codable, Identifiable, Sendable, Equatable, Hashable {
         self.customerID = customerID
         self.imageURL = imageURL
         self.status = status
+    }
+}
+
+struct OrderMapper {
+    static func map(dto: OrderDTO) -> Order {
+        Order(
+            id: dto.id,
+            description: dto.description,
+            price: dto.price,
+            customerID: dto.customerId,
+            imageURL: dto.imageUrl,
+            status: OrderStatus(rawValue: dto.status ?? "") ?? .new
+        )
     }
 }
