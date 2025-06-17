@@ -10,16 +10,19 @@ import Testing
 
 struct CustomerMapViewModelTests {
 
-    @Test("Toggle routes changes showRoutes state")
-    func toggleRoutesChangesState() async {
+    @Test("CustomerMapViewModel exposes correct properties from dependencies")
+    func exposesCorrectProperties() {
         let orderManager = OrderManager(notificationManager: NotificationManager())
-        let locationManager = LocationManager()
-        let viewModel = CustomerMapViewModel(orderManager: orderManager, locationManager: locationManager)
+        let routeManager = RouteManager(locationManager: LocationManager())
+        let viewModel = CustomerMapViewModel(orderManager: orderManager, routeManager: routeManager)
 
-        let initialState = viewModel.showRoutes
+        // Test that view model properly exposes order manager properties
+        #expect(viewModel.customers == orderManager.customers)
+        #expect(viewModel.isLoading == orderManager.isLoading)
+        #expect(viewModel.error == nil)
 
-        await viewModel.toggleRoutes()
-
-        #expect(viewModel.showRoutes == !initialState)
+        // Test that view model properly exposes route manager properties
+        #expect(viewModel.currentRoute == routeManager.currentRoute)
+        #expect(viewModel.routeDestinationCustomer == routeManager.routeDestinationCustomer)
     }
 }

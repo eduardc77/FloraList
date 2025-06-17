@@ -13,8 +13,6 @@ import Testing
 struct GraphQLOrderServiceTests {
 
     @Test func testFetchOrdersSuccess() async throws {
-        
-        // Use centralized test data
         let testOrders = TestData.orders
         
         let graphQLOrders = testOrders.map { order in
@@ -65,8 +63,6 @@ struct GraphQLOrderServiceTests {
     }
 
     @Test func testFetchCustomersSuccess() async throws {
-        
-        // Use centralized test data
         let testCustomers = TestData.customers
         
         let graphQLCustomers = testCustomers.map { customer in

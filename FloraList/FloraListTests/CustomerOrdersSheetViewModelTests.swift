@@ -26,16 +26,14 @@ struct CustomerOrdersSheetViewModelTests {
         let viewModel = CustomerOrdersSheetViewModel(
             customer: testCustomer,
             orderManager: OrderManager(notificationManager: NotificationManager()),
-            locationManager: LocationManager(),
             deepLinkManager: mockDeepLinkManager,
             selectedTab: binding,
-            dismiss: { dismissed = true }
+            dismiss: { dismissed = true },
+            routeManager: RouteManager(locationManager: LocationManager())
         )
-        
         await viewModel.navigateToOrder(testOrder)
         
         #expect(selectedTab == .orders)
         #expect(dismissed == true)
     }
 }
- 
