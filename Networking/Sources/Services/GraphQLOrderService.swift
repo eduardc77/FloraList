@@ -11,6 +11,12 @@ public class GraphQLOrderService {
     private let session: URLSession
     private let baseURL = "https://ba8312ca-45f2-4ed3-86b6-047cf8926e92.mock.pstmn.io/graphql"
 
+    private static let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
     public init(session: URLSession = .shared) {
         self.session = session
     }
@@ -32,7 +38,7 @@ public class GraphQLOrderService {
         """
 
         let response = try await executeGraphQLQuery(query: query)
-        let graphqlResponse = try JSONDecoder().decode(GraphQLOrdersResponse.self, from: response)
+        let graphqlResponse = try Self.decoder.decode(GraphQLOrdersResponse.self, from: response)
         let orders: [Order] = graphqlResponse.data.orders.compactMap { graphQLOrder in
             // Handle missing or invalid status field by defaulting to .new
             let status = graphQLOrder.status.flatMap { OrderStatus(rawValue: $0) } ?? .new
@@ -66,7 +72,7 @@ public class GraphQLOrderService {
         """
 
         let response = try await executeGraphQLQuery(query: query)
-        let graphqlResponse = try JSONDecoder().decode(GraphQLCustomersResponse.self, from: response)
+        let graphqlResponse = try Self.decoder.decode(GraphQLCustomersResponse.self, from: response)
         let customers = graphqlResponse.data.customers.map { graphQLCustomer in
             Customer(
                 id: graphQLCustomer.id,
