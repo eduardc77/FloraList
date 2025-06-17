@@ -1,0 +1,22 @@
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - closure_spacing
+  - collection_alignment
+
+disabled_rules:
+  - trailing_whitespace
+
+excluded:
+  - .build
+  - Tests
+
+line_length:
+  warning: 150
+  error: 200
+
+type_body_length: 300
+function_body_length: 60
+
+identifier_name:
+  min_length: 1 

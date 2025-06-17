@@ -11,14 +11,20 @@ import Foundation
 
 @Suite(.serialized)
 struct OrderServiceTests {
+    
+    private static let encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }()
 
     @Test("fetchOrders success")
     func testFetchOrders() async throws {
         
         // Use centralized test data
-        let mockOrders = TestData.orders
+        let mockOrderDTOs = TestData.orderDTOs
         
-        let mockData = try JSONEncoder().encode(mockOrders)
+        let mockData = try Self.encoder.encode(mockOrderDTOs)
 
         MockURLProtocol.requestHandler = { request in
             #expect(request.url?.absoluteString == "http://demo7677712.mockable.io/orders")
@@ -35,7 +41,7 @@ struct OrderServiceTests {
         let service = OrderService(session: session)
         let result = try await service.fetchOrders()
         
-        #expect(result.count == mockOrders.count)
+        #expect(result.count == mockOrderDTOs.count)
         #expect(result[0].description == "Roses Bouquet")
         #expect(result[0].price == 45.99)
         #expect(result[0].customerID == 143)
@@ -48,9 +54,9 @@ struct OrderServiceTests {
     func testFetchCustomers() async throws {
         
         // Use centralized test data
-        let mockCustomers = TestData.customers
+        let mockCustomerDTOs = TestData.customerDTOs
         
-        let mockData = try JSONEncoder().encode(mockCustomers)
+        let mockData = try Self.encoder.encode(mockCustomerDTOs)
 
         MockURLProtocol.requestHandler = { request in
             #expect(request.url?.absoluteString == "http://demo7677712.mockable.io/customers")
@@ -67,7 +73,7 @@ struct OrderServiceTests {
         let service = OrderService(session: session)
         let result = try await service.fetchCustomers()
         
-        #expect(result.count == mockCustomers.count)
+        #expect(result.count == mockCustomerDTOs.count)
         #expect(result[0].name == "Cristina")
         #expect(result[0].latitude == 46.7712)
         #expect(result[0].longitude == 23.6236)
