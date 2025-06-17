@@ -1,6 +1,6 @@
 //
 //  GraphQLResponse.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //

@@ -6,7 +6,8 @@
 //
 
 import WidgetKit
-import Networking
+import FloraListNetwork
+import FloraListDomain
 
 struct Provider: TimelineProvider {
     private let orderService: OrderServiceProtocol

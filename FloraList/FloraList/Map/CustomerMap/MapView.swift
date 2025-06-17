@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MapKit
-import Networking
+import FloraListDomain
 
 struct MapView: UIViewRepresentable {
     let customers: [Customer]

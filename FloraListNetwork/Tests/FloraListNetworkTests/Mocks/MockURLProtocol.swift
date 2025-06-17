@@ -1,15 +1,15 @@
 //
-//  GraphQLMockURLProtocol.swift
-//  Networking
+//  MockURLProtocol.swift
+//  FloraListNetwork
 //
 //  Created by User on 6/9/25.
 //
 
 import Foundation
 
-class GraphQLMockURLProtocol: URLProtocol {
+class MockURLProtocol: URLProtocol {
     override class func canInit(with request: URLRequest) -> Bool {
-        return request.url?.host?.contains("pstmn.io") == true
+        return request.url?.host?.contains("mockable.io") == true
     }
     
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
@@ -19,7 +19,7 @@ class GraphQLMockURLProtocol: URLProtocol {
     nonisolated(unsafe) static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 
     override func startLoading() {
-        guard let handler = GraphQLMockURLProtocol.requestHandler else {
+        guard let handler = MockURLProtocol.requestHandler else {
             client?.urlProtocol(self, didFailWithError: NSError(domain: "MockError", code: 404, userInfo: nil))
             return
         }
@@ -36,4 +36,4 @@ class GraphQLMockURLProtocol: URLProtocol {
     }
 
     override func stopLoading() {}
-}
+} 

@@ -6,7 +6,6 @@
 //
 
 import Testing
-import Networking
 @testable import FloraList
 
 @Suite("Orders List ViewModel")

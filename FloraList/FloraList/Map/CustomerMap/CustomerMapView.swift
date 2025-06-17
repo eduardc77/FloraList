@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MapKit
-import Networking
 
 struct CustomerMapView: View {
     @Environment(OrderManager.self) private var orderManager

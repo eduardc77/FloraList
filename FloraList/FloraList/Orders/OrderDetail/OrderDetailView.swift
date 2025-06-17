@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListDomain
 
 struct OrderDetailView: View {
     @Environment(LocationManager.self) private var locationManager
@@ -141,7 +141,6 @@ private struct OrderDetailContentView: View {
             }
         }
     }
-
 }
 
 #Preview {

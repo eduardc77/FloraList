@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE0A256B2E016A35009BED38 /* FloraListDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CE0A256A2E016A35009BED38 /* FloraListDomain */; };
+		CE0A256D2E016D40009BED38 /* FloraListDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CE0A256C2E016D40009BED38 /* FloraListDomain */; };
+		CE0A25702E0170A4009BED38 /* FloraListNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = CE0A256F2E0170A4009BED38 /* FloraListNetwork */; };
+		CE0A25722E0170AC009BED38 /* FloraListNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = CE0A25712E0170AC009BED38 /* FloraListNetwork */; };
+		CE733D682E01661400B401FD /* FloraListDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CE733D672E01661400B401FD /* FloraListDomain */; };
 		CE7CB2642DFB10DA0084AF33 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7CB2632DFB10DA0084AF33 /* WidgetKit.framework */; };
 		CE7CB2662DFB10DA0084AF33 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7CB2652DFB10DA0084AF33 /* SwiftUI.framework */; };
 		CE7CB2752DFB10DC0084AF33 /* FloraListWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		CE7CB27E2DFB139E0084AF33 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CE7CB27D2DFB139E0084AF33 /* Networking */; };
 		CEBBFF1F2DF1C5DC00EDB7EA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */; };
-		CEE962F62DEF305B0002A40F /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = CEE962F52DEF305B0002A40F /* Networking */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,13 +57,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CE0A256E2E017051009BED38 /* FloraListNetwork */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FloraListNetwork; path = ../FloraListNetwork; sourceTree = SOURCE_ROOT; };
+		CE733D662E0165F500B401FD /* FloraListDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FloraListDomain; path = ../FloraListDomain; sourceTree = SOURCE_ROOT; };
 		CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FloraListWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7CB2632DFB10DA0084AF33 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		CE7CB2652DFB10DA0084AF33 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		CE876C792DEE43E4000B9E5C /* FloraList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloraList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C8A2DEE43E7000B9E5C /* FloraListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE876C942DEE43E7000B9E5C /* FloraListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloraListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEE962F32DEF30340002A40F /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = ../Networking; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -114,9 +118,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE7CB27E2DFB139E0084AF33 /* Networking in Frameworks */,
 				CE7CB2662DFB10DA0084AF33 /* SwiftUI.framework in Frameworks */,
 				CE7CB2642DFB10DA0084AF33 /* WidgetKit.framework in Frameworks */,
+				CE0A25702E0170A4009BED38 /* FloraListNetwork in Frameworks */,
+				CE0A256B2E016A35009BED38 /* FloraListDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +130,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEBBFF1F2DF1C5DC00EDB7EA /* FirebaseAnalytics in Frameworks */,
-				CEE962F62DEF305B0002A40F /* Networking in Frameworks */,
+				CE0A25722E0170AC009BED38 /* FloraListNetwork in Frameworks */,
+				CE733D682E01661400B401FD /* FloraListDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE0A256D2E016D40009BED38 /* FloraListDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +159,8 @@
 				CE876C7B2DEE43E4000B9E5C /* FloraList */,
 				CE876C8D2DEE43E7000B9E5C /* FloraListTests */,
 				CE876C972DEE43E7000B9E5C /* FloraListUITests */,
-				CEE962F32DEF30340002A40F /* Networking */,
+				CE733D662E0165F500B401FD /* FloraListDomain */,
+				CE0A256E2E017051009BED38 /* FloraListNetwork */,
 				CE7CB2672DFB10DA0084AF33 /* FloraListWidget */,
 				CEE962F42DEF305B0002A40F /* Frameworks */,
 				CE876C7A2DEE43E4000B9E5C /* Products */,
@@ -199,7 +207,8 @@
 			);
 			name = FloraListWidgetExtension;
 			packageProductDependencies = (
-				CE7CB27D2DFB139E0084AF33 /* Networking */,
+				CE0A256A2E016A35009BED38 /* FloraListDomain */,
+				CE0A256F2E0170A4009BED38 /* FloraListNetwork */,
 			);
 			productName = FloraListWidgetExtension;
 			productReference = CE7CB2622DFB10DA0084AF33 /* FloraListWidgetExtension.appex */;
@@ -225,8 +234,9 @@
 			);
 			name = FloraList;
 			packageProductDependencies = (
-				CEE962F52DEF305B0002A40F /* Networking */,
 				CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */,
+				CE733D672E01661400B401FD /* FloraListDomain */,
+				CE0A25712E0170AC009BED38 /* FloraListNetwork */,
 			);
 			productName = FloraList;
 			productReference = CE876C792DEE43E4000B9E5C /* FloraList.app */;
@@ -250,6 +260,7 @@
 			);
 			name = FloraListTests;
 			packageProductDependencies = (
+				CE0A256C2E016D40009BED38 /* FloraListDomain */,
 			);
 			productName = FloraListTests;
 			productReference = CE876C8A2DEE43E7000B9E5C /* FloraListTests.xctest */;
@@ -834,18 +845,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CE7CB27D2DFB139E0084AF33 /* Networking */ = {
+		CE0A256A2E016A35009BED38 /* FloraListDomain */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Networking;
+			productName = FloraListDomain;
+		};
+		CE0A256C2E016D40009BED38 /* FloraListDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FloraListDomain;
+		};
+		CE0A256F2E0170A4009BED38 /* FloraListNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FloraListNetwork;
+		};
+		CE0A25712E0170AC009BED38 /* FloraListNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FloraListNetwork;
+		};
+		CE733D672E01661400B401FD /* FloraListDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FloraListDomain;
 		};
 		CEBBFF1E2DF1C5DC00EDB7EA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEBBFF1D2DF1C5DC00EDB7EA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
-		};
-		CEE962F52DEF305B0002A40F /* Networking */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Networking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

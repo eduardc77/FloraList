@@ -7,7 +7,7 @@
 
 import Observation
 import MapKit
-import Networking
+import FloraListDomain
 
 @Observable
 final class CustomerMapViewModel {

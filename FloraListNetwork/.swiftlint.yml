@@ -19,4 +19,4 @@ type_body_length: 300
 function_body_length: 60
 
 identifier_name:
-  min_length: 1
+  min_length: 1 

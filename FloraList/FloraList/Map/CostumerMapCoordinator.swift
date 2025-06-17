@@ -6,7 +6,7 @@
 //
 
 import Observation
-import Networking
+import FloraListDomain
 
 @Observable
 final class CustomerMapCoordinator {

@@ -1,12 +1,12 @@
 //
 //  ServiceFactoryTests.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //
 
 import Testing
-@testable import Networking
+@testable import FloraListNetwork
 
 @Suite("Service Factory")
 struct ServiceFactoryTests {

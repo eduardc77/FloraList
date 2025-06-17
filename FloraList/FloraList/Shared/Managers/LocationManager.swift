@@ -5,9 +5,8 @@
 //  Created by User on 6/4/25.
 //
 
-import Foundation
 import CoreLocation
-import Networking
+import FloraListDomain
 import MapKit
 
 @Observable

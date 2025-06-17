@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListNetwork
 
 @MainActor
 @Observable

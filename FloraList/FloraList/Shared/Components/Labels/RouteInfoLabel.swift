@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListDomain
 
 struct RouteInfoLabel: View {
     let customer: Customer

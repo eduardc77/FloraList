@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Networking
+import FloraListDomain
 @testable import FloraList
 
 final class MockOrderManager: OrderManager {

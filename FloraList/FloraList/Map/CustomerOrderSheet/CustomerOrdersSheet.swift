@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Networking
+import FloraListDomain
 
 struct CustomerOrdersSheet: View {
     @Environment(OrderManager.self) private var orderManager

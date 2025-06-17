@@ -1,12 +1,12 @@
 //
 //  OrderServiceTests.swift
-//  Networking
+//  FloraListNetwork
 //
 //  Created by User on 6/5/25.
 //
 
 import Testing
-@testable import Networking
+@testable import FloraListNetwork
 import Foundation
 
 @Suite(.serialized)

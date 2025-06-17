@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Networking
+import FloraListDomain
 
 @Observable
 final class OrderDetailViewModel {
