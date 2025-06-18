@@ -13,6 +13,52 @@
     "FloraList Orders" : {
 
     },
+    "new_orders" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevos"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu"
+          }
+        }
+      }
+    },
+    "pending_orders" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendientes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausstehend"
+          }
+        }
+      }
+    },
     "revenue" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -26,6 +72,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingresos"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umsatz"
           }
         }
       }
@@ -43,6 +95,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siguiente: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste: %@"
           }
         }
       }
@@ -63,6 +121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pedidos Totales"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamtbestellungen"
           }
         }
       }

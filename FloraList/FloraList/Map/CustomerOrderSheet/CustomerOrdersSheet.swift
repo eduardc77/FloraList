@@ -82,12 +82,16 @@ private struct CustomerOrdersSheetContentView: View {
                 .padding(.vertical, 4)
             }
 
-            Section("Orders (\(viewModel.ordersCount))") {
+            Section {
                 if !viewModel.hasOrders {
                     ContentUnavailableView {
-                        Label("No Orders", systemImage: "list.bullet")
+                        Label {
+                            Text(.noOrdersYet)
+                        } icon: {
+                            Image(systemName: "list.bullet")
+                        }
                     } description: {
-                        Text("This customer hasn't placed any orders yet.")
+                        Text(.customerNoOrdersMessage)
                     }
                     .listRowBackground(Color.clear)
                 } else {
@@ -99,6 +103,8 @@ private struct CustomerOrdersSheetContentView: View {
                         }
                     }
                 }
+            } header: {
+                Text(.ordersWithCount(viewModel.ordersCount))
             }
         }
         .listSectionSpacing(16)

@@ -17,11 +17,13 @@ final class LocalizationManager {
     enum SupportedLanguage: String, CaseIterable {
         case english = "en"
         case spanish = "es"
+        case german = "de"
 
         var displayName: LocalizedStringResource {
             switch self {
             case .english: return .english
             case .spanish: return .spanish
+            case .german: return .german
             }
         }
 
@@ -29,6 +31,7 @@ final class LocalizationManager {
             switch self {
             case .english: return "🇺🇸"
             case .spanish: return "🇪🇸"
+            case .german: return "🇩🇪"
             }
         }
         

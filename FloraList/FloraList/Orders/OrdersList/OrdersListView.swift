@@ -113,12 +113,18 @@ private struct OrdersListContentView: View {
 
     private func errorView(_ message: String) -> some View {
         ContentUnavailableView {
-            Label("Unable to Load Orders", systemImage: "wifi.exclamationmark")
+            Label {
+                Text(.unableToLoadOrders)
+            } icon: {
+                Image(systemName: "wifi.exclamationmark")
+            }
         } description: {
             Text(message)
         } actions: {
-            Button("Try Again") {
+            Button {
                 Task { await viewModel.refresh() }
+            } label: {
+                Text(.tryAgain)
             }
             .buttonStyle(.borderedProminent)
         }
@@ -141,12 +147,20 @@ private struct OrdersListContentView: View {
                 Button(role: .destructive) {
                     viewModel.clearFilters()
                 } label: {
-                    Label("Clear All", systemImage: "xmark.circle.fill")
+                    Label {
+                        Text(.clearAll)
+                    } icon: {
+                        Image(systemName: "xmark.circle.fill")
+                    }
                 }
             }
         } label: {
-            Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-                .symbolVariant(hasActiveFilters ? .fill : .none)
+            Label {
+                Text(.filter)
+            } icon: {
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                    .symbolVariant(hasActiveFilters ? .fill : .none)
+            }
         }
     }
 
@@ -191,7 +205,11 @@ private struct OrdersListContentView: View {
                 }
             }
         } label: {
-            Label("Sort Orders", systemImage: "arrow.up.arrow.down")
+            Label {
+                Text(.sortOrders)
+            } icon: {
+                Image(systemName: "arrow.up.arrow.down")
+            }
         }
     }
 }

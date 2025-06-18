@@ -70,6 +70,7 @@ extension LocalizedStringResource {
     static let enableLocationForDistance = LocalizedStringResource("enable_location_for_distance")
     static let customerInformationUnavailable = LocalizedStringResource("customer_information_unavailable")
     static let noOrdersYet = LocalizedStringResource("no_orders_yet")
+    static let customerNoOrdersMessage = LocalizedStringResource("customer_no_orders_message")
 
     // MARK: - Notifications Content
     static let orderStatusUpdated = LocalizedStringResource("order_status_updated")
@@ -91,9 +92,14 @@ extension LocalizedStringResource {
         LocalizedStringResource("order_status_updated_body", defaultValue: "Order #\(orderId) (\(description)) is now \(status)")
     }
     
+    static func ordersWithCount(_ count: Int) -> LocalizedStringResource {
+        LocalizedStringResource("orders_with_count", defaultValue: "Orders (\(count))")
+    }
+    
     // MARK: - Language Settings
     static let language = LocalizedStringResource("language", comment: "Language settings section header")
     static let languageDescription = LocalizedStringResource("language_description", comment: "Language settings description")
     static let english = LocalizedStringResource("english", comment: "English language option")
     static let spanish = LocalizedStringResource("spanish", comment: "Spanish language option")
+    static let german = LocalizedStringResource("german", comment: "German language option")
 } 
