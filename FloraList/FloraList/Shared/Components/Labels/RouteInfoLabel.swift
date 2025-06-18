@@ -15,7 +15,7 @@ struct RouteInfoLabel: View {
     var iconColor: Color = .orange
     var font: Font = .caption
 
-    @State private var distance: String = "Calculating..."
+    @State private var distance: String = String(localized: .calculatingDistance)
 
     var body: some View {
         if locationManager.isLocationAvailable {
@@ -38,7 +38,7 @@ struct RouteInfoLabel: View {
             }
         } else {
             Label {
-                Text("Enable location for distance")
+                Text(.enableLocationForDistance)
                     .font(font)
                     .foregroundStyle(.secondary)
             } icon: {

@@ -15,7 +15,7 @@ struct SettingsView: View {
     @Environment(OrderManager.self) private var orderManager
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             SettingsContentView(
                 viewModel: SettingsViewModel(
                     locationManager: locationManager,
@@ -41,45 +41,69 @@ private struct SettingsContentView: View {
                     locationRow
                     notificationRow
                 } header: {
-                    Text("Permissions")
+                    Text(.permissions)
                 } footer: {
-                    Text("Tap any permission to change it in Settings.")
+                    Text(.permissionsDescription)
+                }
+                
+                Section {
+                    languagePicker
+                } header: {
+                    Text(.language)
+                } footer: {
+                    Text(.languageDescription)
                 }
                 
                 Section {
                     networkingRow
                 } header: {
-                    Text("Developer")
+                    Text(.developer)
                 } footer: {
-                    Text("Switch between REST and GraphQL networking implementations.")
+                    Text(.developerSettingsDescription)
                 }
                 
-                Section("About") {
+                Section {
                     HStack {
-                        Text("Version")
+                        Text(.version)
                         Spacer()
                         Text(viewModel.appVersion)
                             .foregroundStyle(.secondary)
                     }
+                } header: {
+                    Text(.about)
                 }
             }
-            .navigationTitle("Settings")
+            .listSectionSpacing(16)
+            .contentMargins(.top, 16, for: .scrollContent)
+            .navigationTitle(Text(.settings))
             .onAppear {
                 viewModel.onAppear()
             }
-            .alert("Location Permission", isPresented: $viewModel.showingLocationAlert) {
-                Button("Open Settings") {
+            .alert(Text(.locationPermission), isPresented: $viewModel.showingLocationAlert) {
+                Button {
                     viewModel.openAppSettings()
+                } label: {
+                    Text(.openSettings)
                 }
-                Button("Cancel", role: .cancel) { }
+                Button(role: .cancel) {
+                    // Do nothing
+                } label: {
+                    Text(.cancel)
+                }
             } message: {
                 Text(viewModel.locationAlertMessage)
             }
-            .alert("Notification Permission", isPresented: $viewModel.showingNotificationAlert) {
-                Button("Open Settings") {
+            .alert(Text(.notificationPermission), isPresented: $viewModel.showingNotificationAlert) {
+                Button {
                     viewModel.openAppSettings()
+                } label: {
+                    Text(.openSettings)
                 }
-                Button("Cancel", role: .cancel) { }
+                Button(role: .cancel) {
+                    // Do nothing
+                } label: {
+                    Text(.cancel)
+                }
             } message: {
                 Text(viewModel.notificationAlertMessage)
             }
@@ -97,9 +121,9 @@ private struct SettingsContentView: View {
                     .frame(width: 20)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Location Services")
+                    Text(.locationServices)
                         .foregroundStyle(.primary)
-                    Text("Show distances and routes to customers")
+                    Text(.locationServicesDescription)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -136,9 +160,9 @@ private struct SettingsContentView: View {
                     .frame(width: 20)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Notifications")
+                    Text(.notifications)
                         .foregroundStyle(.primary)
-                    Text("Get updates when order status changes")
+                    Text(.notificationsDescription)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -165,15 +189,41 @@ private struct SettingsContentView: View {
     }
 
     private var networkingRow: some View {
-        Picker("API Implementation", selection: Binding(
+        Picker(selection: Binding(
             get: { viewModel.currentNetworkingType },
             set: { newType in
                 viewModel.switchNetworkingType(to: newType)
             }
-        )) {
-            Text("REST").tag(NetworkingType.rest)
-            Text("GraphQL").tag(NetworkingType.graphQL)
-        }
+        ), content: {
+            Text(.rest).tag(NetworkingType.rest)
+            Text(.graphql).tag(NetworkingType.graphQL)
+        }, label: {
+            Text(.apiImplementation)
+        })
+        .pickerStyle(.menu)
+    }
+    
+    private var languagePicker: some View {
+        Picker(selection: Binding(
+            get: { LocalizationManager.shared.currentLanguage },
+            set: { newLanguage in
+                LocalizationManager.shared.setLanguage(newLanguage)
+            }
+        ), content: {
+            ForEach(LocalizationManager.SupportedLanguage.allCases, id: \.self) { language in
+                Group {
+                    Text(language.flag) + Text(language.displayName)
+                }
+                .tag(language)
+            }
+        }, label: {
+            HStack {
+                Image(systemName: "globe")
+                    .foregroundColor(.purple)
+                    .frame(width: 20)
+                Text(.language)
+            }
+        })
         .pickerStyle(.menu)
     }
 }
@@ -184,4 +234,5 @@ private struct SettingsContentView: View {
         .environment(NotificationManager())
         .environment(AnalyticsManager.shared)
         .environment(OrderManager(notificationManager: NotificationManager()))
+
 }

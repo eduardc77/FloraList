@@ -46,7 +46,7 @@ struct SmallWidgetView: View {
             Text("\(entry.totalOrders)")
                 .font(.title)
                 .fontWeight(.bold)
-            Text("Total Orders")
+            Text(.totalOrders)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -64,7 +64,7 @@ struct SmallWidgetView: View {
     }
 
     private var nextDeliverySection: some View {
-        Text("Next: \(entry.nextDelivery)")
+        Text(String(localized: .revenueNextFormat(entry.nextDelivery)))
             .font(.caption)
             .fontWeight(.medium)
             .foregroundStyle(.secondary)

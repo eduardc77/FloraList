@@ -78,7 +78,7 @@ private struct OrderDetailContentView: View {
     }
 
     private var orderInfo: some View {
-        LabeledContent("Order #\(viewModel.order.id)") {
+        LabeledContent(String(localized: .orderIdFormat(String(viewModel.order.id)))) {
             Text("$\(viewModel.order.price, specifier: "%.2f")")
                 .font(.title3)
                 .fontWeight(.medium)
@@ -90,30 +90,40 @@ private struct OrderDetailContentView: View {
     }
 
     private var statusSection: some View {
-        Picker("Order Status", selection: .init(
+        Picker(selection: .init(
             get: { viewModel.order.status },
             set: { viewModel.updateStatus($0) }
-        )) {
+        ), content: {
             ForEach(OrderStatus.allCases, id: \.self) { status in
-                Label(status.displayName, systemImage: status.systemImage)
-                    .foregroundStyle(status.color)
-                    .tag(status)
+                Label {
+                    Text(status.displayName)
+                } icon: {
+                    Image(systemName: status.systemImage)
+                }
+                .foregroundStyle(status.color)
+                .tag(status)
             }
-        }
+        }, label: {
+            Text(.sortStatus)
+        })
         .pickerStyle(.menu)
     }
 
     private var customerInfoSection: some View {
         Section {
             HStack {
-                Text("Customer Information")
+                Text(.customerDetails)
                     .font(.headline)
                 Spacer()
             }
 
             if let customer = viewModel.customer {
                 VStack(alignment: .leading, spacing: 8) {
-                    Label(customer.name, systemImage: "person.fill")
+                    Label {
+                        Text(customer.name)
+                    } icon: {
+                        Image(systemName: "person.fill")
+                    }
 
                     LocationInfoLabel(customer: customer)
 
@@ -128,15 +138,19 @@ private struct OrderDetailContentView: View {
                         await viewModel.navigateToCustomerOnMap(customer)
                     }
                 } label: {
-                    Label("View on Map", systemImage: "map")
-                        .foregroundStyle(.blue)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .contentShape(.rect)
+                    Label {
+                        Text(.viewOnMap)
+                    } icon: {
+                        Image(systemName: "map")
+                    }
+                    .foregroundStyle(.blue)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
             } else {
-                Text("Customer information unavailable")
+                Text(.customerInformationUnavailable)
                     .foregroundStyle(.secondary)
             }
         }

@@ -28,7 +28,7 @@ struct CustomerOrdersSheet: View {
                     routeManager: routeManager
                 )
             )
-            .navigationTitle("Customer Details")
+            .navigationTitle(Text(.customerDetails))
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium, .large])
@@ -55,7 +55,7 @@ private struct CustomerOrdersSheetContentView: View {
                         VStack(alignment: .leading) {
                             Text(viewModel.customer.name)
                                 .font(.headline)
-                            Text("Customer ID: \(viewModel.customer.id)")
+                            Text(String(localized: .customerIdFormat(String(viewModel.customer.id))))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -65,7 +65,10 @@ private struct CustomerOrdersSheetContentView: View {
                     HStack {
                         Image(systemName: "location.fill")
                             .foregroundStyle(.green)
-                        Text("Lat: \(viewModel.customer.latitude, specifier: "%.6f"), Lon: \(viewModel.customer.longitude, specifier: "%.6f")")
+                        Text(String(localized: .latitudeLongitudeFormat(
+                            String(format: "%.6f", viewModel.customer.latitude),
+                            String(format: "%.6f", viewModel.customer.longitude)
+                        )))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -79,12 +82,16 @@ private struct CustomerOrdersSheetContentView: View {
                 .padding(.vertical, 4)
             }
 
-            Section("Orders (\(viewModel.ordersCount))") {
+            Section {
                 if !viewModel.hasOrders {
                     ContentUnavailableView {
-                        Label("No Orders", systemImage: "list.bullet")
+                        Label {
+                            Text(.noOrdersYet)
+                        } icon: {
+                            Image(systemName: "list.bullet")
+                        }
                     } description: {
-                        Text("This customer hasn't placed any orders yet.")
+                        Text(.customerNoOrdersMessage)
                     }
                     .listRowBackground(Color.clear)
                 } else {
@@ -96,6 +103,8 @@ private struct CustomerOrdersSheetContentView: View {
                         }
                     }
                 }
+            } header: {
+                Text(.ordersWithCount(viewModel.ordersCount))
             }
         }
         .listSectionSpacing(16)
@@ -117,9 +126,11 @@ private struct CustomerOrdersSheetContentView: View {
                 }
             }
             
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
                     viewModel.dismissSheet()
+                } label: {
+                    Text(.done)
                 }
             }
         }

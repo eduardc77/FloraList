@@ -57,7 +57,7 @@ struct MediumWidgetView: View {
             Text("\(entry.totalOrders)")
                 .font(.title)
                 .fontWeight(.bold)
-            Text("Total Orders")
+            Text(.totalOrders)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -65,9 +65,9 @@ struct MediumWidgetView: View {
     
     private var statusLabelsView: some View {
         HStack {
-            Label("\(entry.newOrders) New".uppercased(), systemImage: "plus.circle.fill")
+            Label("\(entry.newOrders)", systemImage: "plus.circle.fill")
                 .foregroundStyle(.blue)
-            Label("\(entry.pendingOrders) Pending".uppercased(), systemImage: "clock.fill")
+            Label("\(entry.pendingOrders)", systemImage: "clock.fill")
                 .foregroundStyle(.orange)
         }
         .font(.caption)
@@ -87,14 +87,14 @@ struct MediumWidgetView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundStyle(.green)
-            Text("Revenue")
+            Text(.revenue)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
     }
     
     private var nextDeliveryView: some View {
-        Text("Next: \(entry.nextDelivery)")
+        Text(String(localized: .revenueNextFormat(entry.nextDelivery)))
             .font(.caption)
             .fontWeight(.medium)
             .foregroundStyle(.secondary)
