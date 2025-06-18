@@ -26,7 +26,7 @@ struct LocationInfoLabel: View {
     private var coordinateText: String {
         let latitude = String(format: "%.6f", customer.latitude)
         let longitude = String(format: "%.6f", customer.longitude)
-        return "Lat: \(latitude), Lon: \(longitude)"
+        return String(localized: .latitudeLongitudeFormat(latitude, longitude))
     }
 }
 

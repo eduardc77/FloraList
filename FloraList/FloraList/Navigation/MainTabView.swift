@@ -15,19 +15,31 @@ struct MainTabView: View {
             OrdersListView()
                 .tag(AppTab.orders)
                 .tabItem {
-                    Label(AppTab.orders.title, systemImage: AppTab.orders.icon)
+                    Label {
+                        Text(AppTab.orders.title)
+                    } icon: {
+                        Image(systemName: AppTab.orders.icon)
+                    }
                 }
 
             CustomerMapView()
                 .tag(AppTab.map)
                 .tabItem {
-                    Label(AppTab.map.title, systemImage: AppTab.map.icon)
+                    Label {
+                        Text(AppTab.map.title)
+                    } icon: {
+                        Image(systemName: AppTab.map.icon)
+                    }
                 }
 
             SettingsView()
                 .tag(AppTab.settings)
                 .tabItem {
-                    Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
+                    Label {
+                        Text(AppTab.settings.title)
+                    } icon: {
+                        Image(systemName: AppTab.settings.icon)
+                    }
                 }
         }
         .environment(\.selectedTab, $selectedTab)

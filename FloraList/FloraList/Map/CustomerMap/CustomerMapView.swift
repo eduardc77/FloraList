@@ -22,7 +22,7 @@ struct CustomerMapView: View {
                     routeManager: routeManager
                 )
             )
-            .navigationTitle("Customer Locations")
+            .navigationTitle(Text(.customerLocations))
             .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(item: .init(
@@ -95,21 +95,27 @@ private struct CustomerMapContentView: View {
     private var loadingView: some View {
         VStack {
             ProgressView()
-            Text("Loading customer locations...")
+            Text(.loadingCustomerLocations)
                 .foregroundStyle(.secondary)
         }
     }
 
     private func errorView(_ message: String) -> some View {
         ContentUnavailableView {
-            Label("Unable to Load Locations", systemImage: "map.fill")
+            Label {
+                Text(.unableToLoadLocations)
+            } icon: {
+                Image(systemName: "map.fill")
+            }
         } description: {
             Text(message)
         } actions: {
-            Button("Try Again") {
+            Button {
                 Task { 
                     await viewModel.retryDataFetch()
                 }
+            } label: {
+                Text(.tryAgain)
             }
             .buttonStyle(.borderedProminent)
         }

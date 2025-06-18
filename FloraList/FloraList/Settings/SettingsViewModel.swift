@@ -15,20 +15,25 @@ class SettingsViewModel {
     private let notificationManager: NotificationManager
     private let analyticsManager: AnalyticsManager
     private let orderManager: OrderManager
+    private let localizationManager: LocalizationManager
 
     var showingLocationAlert = false
     var showingNotificationAlert = false
+    var currentLanguage: LocalizationManager.SupportedLanguage {
+        get { localizationManager.currentLanguage }
+        set { localizationManager.setLanguage(newValue) }
+    }
 
     var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     }
     
-    var networkingTypeText: String {
+    var networkingTypeText: LocalizedStringResource {
         switch orderManager.networkingType {
         case .rest:
-            return "REST"
+            return .rest
         case .graphQL:
-            return "GraphQL"
+            return .graphql
         }
     }
     
@@ -44,12 +49,12 @@ class SettingsViewModel {
         orderManager.networkingType
     }
     
-    var locationStatusText: String {
-        isLocationEnabled ? "Enabled" : "Disabled"
+    var locationStatusText: LocalizedStringResource {
+        isLocationEnabled ? .enabled : .disabled
     }
     
-    var notificationStatusText: String {
-        isNotificationEnabled ? "Enabled" : "Disabled"
+    var notificationStatusText: LocalizedStringResource {
+        isNotificationEnabled ? .enabled : .disabled
     }
     
     var locationAlertMessage: String {
@@ -64,12 +69,14 @@ class SettingsViewModel {
         locationManager: LocationManager,
         notificationManager: NotificationManager,
         analyticsManager: AnalyticsManager,
-        orderManager: OrderManager
+        orderManager: OrderManager,
+        localizationManager: LocalizationManager = .shared
     ) {
         self.locationManager = locationManager
         self.notificationManager = notificationManager
         self.analyticsManager = analyticsManager
         self.orderManager = orderManager
+        self.localizationManager = localizationManager
     }
     
     // MARK: - Methods

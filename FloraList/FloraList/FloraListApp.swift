@@ -18,6 +18,7 @@ struct FloraListApp: App {
     @State private var locationManager = LocationManager()
     @State private var routeManager: RouteManager
     @State private var analyticsManager = AnalyticsManager.shared
+    @State private var localizationManager = LocalizationManager.shared
 
     @State private var deepLinkErrorMessage: String?
 
@@ -42,6 +43,8 @@ struct FloraListApp: App {
                 .environment(routeManager)
                 .environment(deepLinkManager)
                 .environment(analyticsManager)
+                .environment(localizationManager)
+                .environment(\.locale, localizationManager.currentLanguage.locale)
                 .task {
                     await notificationManager.setup()
                     locationManager.requestLocationPermission()
@@ -55,13 +58,15 @@ struct FloraListApp: App {
                         }
                     }
                 }
-                .alert("Deep Link Error",
+                .alert(Text(.deepLinkError),
                        isPresented: .init(
                         get: { deepLinkErrorMessage != nil },
                         set: { if !$0 { deepLinkErrorMessage = nil } }
                        )) {
-                    Button("OK") {
+                    Button {
                         deepLinkErrorMessage = nil
+                    } label: {
+                        Text(.ok)
                     }
                 } message: {
                     if let deepLinkErrorMessage {

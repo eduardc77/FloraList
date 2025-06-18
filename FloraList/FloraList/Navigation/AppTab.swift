@@ -12,11 +12,11 @@ enum AppTab: Hashable {
     case map
     case settings
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
-        case .orders: "Orders"
-        case .map: "Map"
-        case .settings: "Settings"
+        case .orders: .orders
+        case .map: .map
+        case .settings: .settings
         }
     }
 

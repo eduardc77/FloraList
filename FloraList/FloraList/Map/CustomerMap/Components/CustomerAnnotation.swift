@@ -36,7 +36,7 @@ final class CustomerAnnotation: NSObject, MKAnnotation {
         if !components.isEmpty {
             return components.joined(separator: " • ")
         } else {
-            return "Customer ID: \(customer.id)"
+            return String(localized: .customerIdFormat(String(customer.id)))
         }
     }
 

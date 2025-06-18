@@ -16,9 +16,20 @@ final class OrdersListViewModel {
     var selectedStatus: OrderStatus?
 
     enum SortOption: String, CaseIterable {
-        case priceHighToLow = "Price: High to Low"
-        case priceLowToHigh = "Price: Low to High"
-        case status = "Status"
+        case priceHighToLow = "sort_price_high_to_low"
+        case priceLowToHigh = "sort_price_low_to_high"
+        case status = "sort_status"
+        
+        var displayName: String {
+            switch self {
+            case .priceHighToLow:
+                return String(localized: .sortPriceHighToLow)
+            case .priceLowToHigh:
+                return String(localized: .sortPriceLowToHigh)
+            case .status:
+                return String(localized: .sortStatus)
+            }
+        }
     }
 
     var selectedSortOption: SortOption?

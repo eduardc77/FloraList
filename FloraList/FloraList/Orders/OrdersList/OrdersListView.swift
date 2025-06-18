@@ -62,8 +62,8 @@ private struct OrdersListContentView: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle("Orders")
-        .searchable(text: $viewModel.searchText, prompt: "Search orders...")
+        .navigationTitle(Text(.orders))
+        .searchable(text: $viewModel.searchText, prompt: Text(.searchOrders))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 filterSortMenu
@@ -102,7 +102,7 @@ private struct OrdersListContentView: View {
             Spacer()
             VStack {
                 ProgressView()
-                Text("Loading orders...")
+                Text(.loadingOrders)
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -167,7 +167,11 @@ private struct OrdersListContentView: View {
                 }
             }
         } label: {
-            Label("Filter by Status", systemImage: "tag")
+            Label {
+                Text(.filterByStatus)
+            } icon: {
+                Image(systemName: "tag")
+            }
         }
     }
 
@@ -178,7 +182,7 @@ private struct OrdersListContentView: View {
                     viewModel.selectedSortOption = viewModel.selectedSortOption == option ? nil : option
                 } label: {
                     HStack {
-                        Text(option.rawValue)
+                        Text(option.displayName)
                         Spacer()
                         if viewModel.selectedSortOption == option {
                             Image(systemName: "checkmark")
